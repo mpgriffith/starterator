@@ -1,0 +1,6 @@
+notes
+finish screenshots
+change title/add what doing to window with starterate
+on unphameratored phage, change profile label to say profile label actually
+write how to read report help files
+write option/database info help files

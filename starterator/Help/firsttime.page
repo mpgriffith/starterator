@@ -1,0 +1,39 @@
+<page xmlns="http://projectmallard.org/1.0/"
+	  xmlns:e="http://projectmallard.org/experimental/"
+      type="topic"
+      id="firsttime">
+
+   <info>
+    <!-- <link type="guide" xref="index#introduction"/> -->
+    <desc>
+        Running Starterator for the first time.
+    </desc>
+    <license>
+      <p>GNU General Public License</p>
+    </license>
+  </info>
+
+<title> First Time Running Starterator</title>
+  <section>
+  <title>Introduction</title>
+  <p> The first time Starterator is run on a computer, it needs some extra information to be able to work properly.
+        </p>
+</section>
+<section>
+  <title> Setting up the File Folders </title>
+  <p> Starterator requires two folders in order to run correctly. These folders are an intermediate files folder where
+    files generated throuhout a run of Starterator are stored. It also requires a folder where the reports are stored. The first time Starterator is run on a computer, a prompt will appear asking where these folders are.</p>
+    <!-- image of dialog -->
+    <p> In addition, Starterator needs to know where to store the protein database it creates. The first time Starterator runs on a computer, a prompt will ask where this database files should be stored.</p>
+    <!-- image of dialog -->
+    <p> The recommended system for storing files is to have a Starterator folder with an "Intermediate Files" subfolder, a "Report Files" subfolder, and a "Protein Database" subfolder, as shown below.</p>
+    <p> Where Starterator saves files can be changed by clicking on Preferences in the menu of Starterator </p>
+    <!-- image of folders -->
+  </section>
+  <section>
+    <title>Database Information</title>
+    <p> Starterator may also ask about how to connect to the database. 
+      <!-- image of database prompt -->
+    </p>
+</section>
+</page>

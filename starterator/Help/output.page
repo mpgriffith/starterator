@@ -1,0 +1,38 @@
+<page xmlns="http://projectmallard.org/1.0/"
+    xmlns:e="http://projectmallard.org/experimental/"
+    type="topic"
+    id="basicoutput">
+
+   <info>
+    <link type="guide" xref="index#output"/>
+    <desc>
+      Understanding the Report from Starterator
+    </desc>
+    <license>
+      <p>GNU General Public License</p>
+    </license>
+  </info>
+ <title> Output of Pham</title>
+ <section> 
+  <title>Introduction</title>
+	<p>Starterator outputs a single PDF with 2 elements per pham. </p>
+  <p> The second element is a text report that has information about the suggested start of the phage of interest.</p>
+	<p> If the whole phage genome was run through Starterator, the PDF contais all the phams in the phage ordered by the gene number.</p>
+  </section>
+  <section>
+    <title> Graph </title>
+    <p> The first element of the report for a pham is the graph representing the genes in the pham and their candidate start sites. Each track represents a set of genes in the pham that have the same alignment, candidate start sites, and called start site. The legend for each track can be found in the text report. The called start site of each track is blue, while other start sites are various colors.</p>
+    <p><media type="image" mime="image/png" src="figures/liefie_r_pham_graph.png">Unphameratored Gene</media></p>
+  </section>
+  <section>
+    <title>Text Report </title>
+    <p> The text report contains the legend for the graph reprort that says what genes are in each track of the graph. </p>
+    <p> The next part of the text report contains specific information for the gene of interest.</p>
+    <p> The Suggested Start coordinates are listed first. If there is no suggested start (the most called start of the pham is not a candidate start of the gene of interest), then a list containing the coordinates of all the candidate starts appears. If the most called start of the  pham is a candidate start of the gene, but not currently called, it appears in brackets i.e. [(1, 42)]. If the most called start of the pham is the currently called start of the gene, then it appears as such (1, 42). The first number in parentheses refers to the label of the start on the graph, the second number refers to the coordinates of the gene in the DNA sequence of the phage </p>
+    <p> Information about the gene itself is listed next on the report. The gene number, the start coordinate, and the stop coordinates of the gene are shown. Then a list of all the candidate starts of the gene are shown below.</p>
+    <p><media type="image" mime="image/png" src="figures/liefie_report_pham_text_needs_fixed.png">Unphameratored Gene</media></p>
+
+  </section>
+
+
+</page>

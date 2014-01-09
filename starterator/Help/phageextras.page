@@ -1,0 +1,32 @@
+<page xmlns="http://projectmallard.org/1.0/"
+	  xmlns:e="http://projectmallard.org/experimental/"
+      type="topic"
+      id="extraphage">
+
+   <info>
+    <link type="guide" xref="index#output"/>
+    <desc>
+        Understanding the whole phage report.
+    </desc>
+    <license>
+      <p>GNU General Public License</p>
+    </license>
+  </info>
+
+<title> Whole Phage Output</title>
+<section>
+  <title>Introduction </title>
+    <p> When a report of a whole phage is generated from Starterator, a report showing the pham of each gene is generated as well as a list of suggested start sites. These are generated in addition to a report of each pham that is in the phage genome. These reports are in the same PDF file in the order of their appearance in the genome.</p>
+  </section>
+  <section>
+    <title> Phage Pham Genome </title>
+    <p>The first page of a report from a whole page is the phage genome. Each box on the graph represents a gene in the phage. The color of each box corresponds to the color of the gene's pham in Phamerator. Each box is labeled with its gene number and the number of the pham it belongs to. If the phage is not in Phamerator yet, there may be some genes that do not belong to a pham yet, these are shown as black boxes.</p>
+    <p><media type="image" mime="image/png" src="figures/liefie_report_part_1.png">Phage Genome</media></p>
+</section>
+<section>
+  <title> Suggested Start Sites List </title>
+  <p>The next page is the Suggested Start Sites list. This contains each gene in the genome, what pham it belongs to, and a suggested start site, or a list of the candidate start sites for the gene. If the gene does not belong to a pham, it says it is not a member of a pham. </p>
+  <p><media type="image" mime="image/png" src="figures/liefie_report_suggested_starts.png">Phage Genome</media></p>
+</section>
+
+</page>

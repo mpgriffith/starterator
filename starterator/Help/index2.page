@@ -1,0 +1,23 @@
+<page xmlns="http://projectmallard.org/1.0/"
+      type="guide"
+      id="index">
+ <title> Starterator Help</title>
+
+	<p>Starterator is a program used to compare start sites of genes in the same phamily. </p>
+	<p> This guide is intended to show how the program should be run and how to interpret the output.</p>
+
+  <section id="intro" style="2column">
+    <title>Introduction</title>
+  </section>
+
+  <section id="uses" style="2column">
+    <title>Uses</title>
+  </section>
+
+  <section id="output" style="2column">
+    <title>Understanding the Output</title>
+  </section>
+
+
+</page>
+
