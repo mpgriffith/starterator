@@ -1,0 +1,43 @@
+<page xmlns="http://projectmallard.org/1.0/"
+	  xmlns:e="http://projectmallard.org/experimental/"
+      type="topic"
+      id="wholeUnphamerated">
+
+   <info>
+    <link type="guide" xref="index#running"/>
+    <desc>
+            Generate a report on all the genes in a phage not in the Phamerator Database.
+    </desc>
+    <license>
+      <p>GNU General Public License</p>
+    </license>
+  </info>
+
+<title> Whole Unphamerated Phage</title>
+  <section>
+  <title>Whole Unphameratored Phage </title>
+    <p>
+      Before running Starterator on a phage not in the Phamerator Database, you will need the fasta file of the sequence of the phage and a DNAMaster profile of the auto-annotated phage. To obtain the DNAMaster profile, ...
+    </p>
+    <p><media type="image" mime="image/png" src="figures/choose_unpham_phage.png">Unhameratored Phage</media></p>
+      <p>
+      <ul>
+      <li>To run Starterator on a whole phage that is not in the Phamerator Database, choose the Whole Unphameratored Phage option and click okay. 
+      </li>
+        <li>
+          A new window will appear. In this window, you should type the name of the phage you want to run 
+          Phamerator on.
+        </li>
+        <li>
+           In addition, you will need to provide the fasta file and DNAMaster profile. To do this, click on the select button, then a dialog will appear where you can navigate to the appropiate file. 
+         </li>
+         <li>
+          Once these are selected, click the Starterate button, and Starterator will begin. You will see the progress in this window. Be advised that Starterator can take a while to complete, so do not close this window.
+          </li>
+          <li>
+            When Starterator is finished, a new window will appear with a link to the report. To understand how to read the report, <link type="topic" xref="output">read this</link>.
+          </li>
+        </ul>
+        </p>
+</section>
+</page>

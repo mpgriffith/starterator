@@ -1,0 +1,20 @@
+<page xmlns="http://projectmallard.org/1.0/"
+	  xmlns:e="http://projectmallard.org/experimental/"
+      type="topic"
+      id="pham">
+
+   <info>
+    <link type="guide" xref="index#running"/>
+    <desc>
+      Generate a report for a single Pham.
+    </desc>
+    <license>
+      <p>GNU General Public License</p>
+    </license>
+  </info>
+<title> Pham</title>
+<section>
+  <title>Pham</title>
+  
+</section>
+</page>

@@ -1,0 +1,26 @@
+<page xmlns="http://projectmallard.org/1.0/"
+	  xmlns:e="http://projectmallard.org/experimental/"
+      type="topic"
+      id="wholephamerated">
+
+   <info>
+    <link type="guide" xref="index#running"/>
+    <desc>
+      Generate a report on all the genes in a Phage not in the Phamerator Database.
+    </desc>
+    <license>
+      <p>GNU General Public License</p>
+    </license>
+  </info>
+<title> Whole Phameratored Phage</title>
+<section>
+  <title>Whole Phameratored Phage</title>
+   <p><media type="image" mime="image/png" src="figures/whole_phage_chosen.png">Phameratored Phage</media>
+</p>
+    <p>To run Starterator on a whole phage that is in the Phamerator Database, choose the Whole Phameratored Phage option 
+    and click okay. A new window will appear. In this window, you should type the name of the phage you want to run 
+    Phamerator on. Once clicked, Starterator will begin and you will see the progress below. Be advised that 
+    Starterator can take a while to complete, so do not close this window. When Starterator is finished, a new window 
+    will appear with a link to the report. To understand how to read the report, <link type="topic" xref="output">read this</link>.</p>
+</section>
+</page>

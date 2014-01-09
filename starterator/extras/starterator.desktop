@@ -1,0 +1,8 @@
+[Desktop Entry]
+Encoding=UTF-8
+Name=Starterator
+Exec=Starterator
+Icon=./starterator.svg
+Type=Application
+Terminal=False
+Categories=Education;

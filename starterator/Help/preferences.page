@@ -1,0 +1,39 @@
+<page xmlns="http://projectmallard.org/1.0/"
+	  xmlns:e="http://projectmallard.org/experimental/"
+      type="topic"
+      id="preferences">
+
+   <info>
+    <link type="guide" xref="index#intro"/>
+    <desc>
+      First time running Starterator and Editing Starterator Preferences
+    </desc>
+    <license>
+      <p>GNU General Public License</p>
+    </license>
+  </info>
+
+<title> Starterator Preferences</title>
+  <section>
+  <title>Introduction</title>
+  <p> The first time Starterator is run on a computer, it needs some extra information to be able to work properly. This information can be entered in by clicking on the Edit in the menu bar and then clicking Preferences.
+        </p>
+</section>
+<section>
+  <title> Setting up the File Folders </title>
+  <p> Starterator requires three folders in order to run correctly. These folders are an intermediate files folder where files generated throughout a run of Starterator are stored. It also requires a folder where the reports are stored. </p>
+    <p> In addition, Starterator needs to know where to store the protein database it creates. The first time Starterator runs on a computer, a prompt will ask where this database files should be stored.</p>
+    <p> The recommended system for storing files is to have a Starterator folder with an "Intermediate Files" subfolder, a "Report Files" subfolder, and a "Protein Database" subfolder, as shown below.</p>
+    <p><media type="image" mime="image/png" src="figures/folders.png">Folders</media></p>
+    <p> These can be changed in the Preferences dialog, by clicking on the file tab. </p>
+    <p><media type="image" mime="image/png" src="figures/preferences_files.png">Unhameratored Phage</media></p>
+    <p> To change the folder, click the button and a new dialog will appear that allows you to navigate to the folder of your choice or create a folder. </p>
+  </section>
+  <section>
+    <title>Database Information</title>
+    <p> Starterator may also ask about how to connect to the database.  </p>
+    <p><media type="image" mime="image/png" src="figures/preferences_database.png">Database Preferences</media></p>
+    <p> The database host should be "localhost" and the database name should be "Mycobacteriophage_Draft" for Starterator to work correctly. The database user and database password on the Virtual Machines installed from phagesdb.org should be "root" and "phage" respectively.
+    </p>
+</section>
+</page>
