@@ -137,7 +137,7 @@ def add_desktop_file():
     desktop.optionxform = str
     desktop.readfp(open(DESKTOP_FILE))
     desktop_info = dict(desktop.items("Desktop Entry"))
-    desktop_info["Exec"] = + os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "Starterator")
+    desktop_info["Exec"] = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "Starterator")
     desktop_info["Icon"] = os.path.join(os.environ["HOME"], ".starterator/", "starterator.svg")
     desktop.set("Desktop Entry", "Exec",  os.path.join(os.dirname(os.path.dirname(os.path.abspath(__file__))), "starterator.sh") )
     desktop.set("Desktop Entry", "Icon", os.path.join(os.environ["HOME"], ".starterator/", "starterator.svg"))
@@ -157,8 +157,7 @@ def create_folders():
     if not os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), "Proteins")):
         os.mkdir(os.path.join(os.environ["HOME"], "Applications", "Starterator", "Proteins"))
     if not os.path.exists(os.path.join(os.environ["HOME"], ".starterator", "starterator.config")):
-        shutil.copyfile(os.path.join( os.path.join(os.path.dirname(os.path.abspath(__file__)), "extras", "starterator.config"), 
-                os.path.join(os.environ["HOME"], ".starterator", "starterator.config"))
+        shutil.copyfile(CONFIGURATION_FILE, ".starterator", "starterator.config"))
     if not os.path.exists(os.path.join(os.environ["HOME"], ".starterator", "Intermediate Files")):
         os.mkdir(os.path.join(os.environ["HOME"], ".starterator", "Intermediate Files"))
     if not os.path.exists(os.path.join(os.environ["HOME"], ".starterator", "Report Files")): 

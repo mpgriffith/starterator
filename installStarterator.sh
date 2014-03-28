@@ -1,10 +1,11 @@
-sudo apt-get install python-pip ncbi-blast+
+sudo apt-get install python-pip ncbi-blast+ git
 sudo pip install PyPDF2
 sudo pip install beautifulsoup4
 
-cd Applications
+cd $HOME/Applications
 mkdir Starterator
 cd Starterator
-git branch https://github.com/eddis/starterator.git
+git init
+git clone https://github.com/eddis/starterator.git
 
 ./starterator.sh
