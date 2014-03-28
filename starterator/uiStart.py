@@ -163,7 +163,7 @@ class StarteratorWindow(Gtk.Window):
     def on_contents_clicked(self, button):
         root_dir = utils.help_files 
         print root_dir
-        uri = 'ghelp://%s/index.page' % root_dir
+        uri = 'ghelp:/%s/index.page' % root_dir
         print uri
         time_now = int(time.time())
 

@@ -12,11 +12,11 @@ import shutil
 
 
 MAKING_FILES = os.path.join(os.path.dirname(os.path.abspath(__file__)))+ "/making_files.py" # absolute path to making files file
-ICON_FILE =  "extras/starterator.svg"
-CONFIGURATION_FILE = "extras/starterator.config"
-DESKTOP_FILE = "extras/starterator.desktop"
-HELP_FILES = "Help"
-PROTEIN_DB = "Proteins/"
+ICON_FILE =  os.path.join(os.path.dirname(os.path.abspath(__file__)), "extras", "starterator.svg")
+CONFIGURATION_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "extras", "starterator.config")
+DESKTOP_FILE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "extras", "starterator.desktop")
+HELP_FILES =  os.path.join(os.path.dirname(os.path.abspath(__file__)), "Help")
+PROTEIN_DB =  os.path.join(os.path.dirname(os.path.abspath(__file__)), "Proteins")
 INTERMEDIATE_DIR = ""
 FINAL_DIR = ""
 BLAST_DIR = ""
@@ -24,8 +24,7 @@ CLUSTAL_DIR = ""
 config_file = os.path.abspath(os.path.join(os.environ["HOME"], ".starterator/starterator.config"))
 icon_file = os.path.abspath(os.path.join(os.environ["HOME"], ".starterator/starterator.svg"))
 desktop_file = os.path.abspath(os.path.join(os.environ["HOME"], ".local/share/applications/", "startertor.desktop"))
-help_files = os.path.join(os.environ["HOME"], ".starterator", "Help")
-
+help_files = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Help")
 
 
 class StarteratorError(Exception):
@@ -138,9 +137,9 @@ def add_desktop_file():
     desktop.optionxform = str
     desktop.readfp(open(DESKTOP_FILE))
     desktop_info = dict(desktop.items("Desktop Entry"))
-    desktop_info["Exec"] ="python " + os.path.join(os.path.dirname(os.path.abspath(__file__)), "Starterator")
+    desktop_info["Exec"] = + os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "Starterator")
     desktop_info["Icon"] = os.path.join(os.environ["HOME"], ".starterator/", "starterator.svg")
-    desktop.set("Desktop Entry", "Exec", "./" + os.path.join(os.path.dirname(os.path.abspath(__file__)), "starterator.sh") )
+    desktop.set("Desktop Entry", "Exec",  os.path.join(os.dirname(os.path.dirname(os.path.abspath(__file__))), "starterator.sh") )
     desktop.set("Desktop Entry", "Icon", os.path.join(os.environ["HOME"], ".starterator/", "starterator.svg"))
     with open(DESKTOP_FILE, 'wb') as df:
         desktop.write(df)
@@ -156,9 +155,10 @@ def create_folders():
     if not os.path.exists(os.path.join(os.environ["HOME"], ".starterator")):
         os.mkdir(os.path.join(os.environ["HOME"], ".starterator"))
     if not os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), "Proteins")):
-        os.mkdir(os.path.join(os.environ["Home"], "Applications", "Starterator", "Proteins"))
+        os.mkdir(os.path.join(os.environ["HOME"], "Applications", "Starterator", "Proteins"))
     if not os.path.exists(os.path.join(os.environ["HOME"], ".starterator", "starterator.config")):
-        shutil.copyfile("extras/starterator.config", os.path.join(os.environ["HOME"], ".starterator", "starterator.config"))
+        shutil.copyfile(os.path.join( os.path.join(os.path.dirname(os.path.abspath(__file__)), "extras", "starterator.config"), 
+                os.path.join(os.environ["HOME"], ".starterator", "starterator.config"))
     if not os.path.exists(os.path.join(os.environ["HOME"], ".starterator", "Intermediate Files")):
         os.mkdir(os.path.join(os.environ["HOME"], ".starterator", "Intermediate Files"))
     if not os.path.exists(os.path.join(os.environ["HOME"], ".starterator", "Report Files")): 
