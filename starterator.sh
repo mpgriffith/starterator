@@ -8,4 +8,4 @@ cd $starterator_path
 
 git pull
 $starterator_path/Starterator
-python $starterator_path/Starterator
+python $starterator_path/starterator/Starterator
