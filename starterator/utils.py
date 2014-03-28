@@ -10,28 +10,29 @@ from Bio.Alphabet import IUPAC
 from pkg_resources import resource_string, resource_filename
 import shutil
 
-MAKING_FILES = "making_files.py"
+
+MAKING_FILES = os.path.join(os.path.dirname(os.path.abspath(__file__)))+ "/making_files.py" # absolute path to making files file
 ICON_FILE =  "extras/starterator.svg"
 CONFIGURATION_FILE = "extras/starterator.config"
 DESKTOP_FILE = "extras/starterator.desktop"
 HELP_FILES = "Help"
+PROTEIN_DB = "Proteins/"
+INTERMEDIATE_DIR = ""
+FINAL_DIR = ""
+BLAST_DIR = ""
+CLUSTAL_DIR = ""
 config_file = os.path.abspath(os.path.join(os.environ["HOME"], ".starterator/starterator.config"))
 icon_file = os.path.abspath(os.path.join(os.environ["HOME"], ".starterator/starterator.svg"))
 desktop_file = os.path.abspath(os.path.join(os.environ["HOME"], ".local/share/applications/", "startertor.desktop"))
 help_files = os.path.join(os.environ["HOME"], ".starterator", "Help")
 
-def get_pham_colors(db):
-    """
-        Function to save the colors of the phams in a dictionary mapping pham name to pham color
-    """
-    cursor = db.cursor()
-    cursor.execute("SELECT `name`, `color` FROM `pham_color`;")
-    results = cursor.fetchall()
-    pham_colors_ = {}
-    for row in results:
-        pham_colors_[str(row[0])] = row[1]
 
-    return pham_colors_
+
+class StarteratorError(Exception):
+    def __init__(self, value):
+        self.value = value
+    def __str__(self):
+        return repr(self.value)
 
 def get_pham_no(db, phage_name, gene_number):
     """
@@ -86,51 +87,41 @@ def find_phams_of_a_phage(db, phage):
     return phage_phams, seq_length
 
 
-def get_protein_sequences(db):
+def get_protein_sequences():
     proteins = []
-    cursor = db.cursor()
-    cursor.execute('SELECT GeneID, translation from gene')
+    get_db().execute('SELECT GeneID, translation from gene')
     results = cursor.fetchall()
     for row in results:
         protein = SeqRecord(Seq(row[1], IUPAC.protein), id=row[0]+"+", name=row[0], description=row[0])
         proteins.append(protein)
     return proteins
 
-def update_protein_db(db, config_info):
-    proteins = get_protein_sequences(db)
-    fasta_file = config_info['protein_db'] + 'Proteins'
-    count = SeqIO.write(proteins, fasta_file, 'fasta')
-    if not config_info['legacy_blast']:
-        blast_db_command = [config_info['blast_dir'] + 'makeblastdb',
-                    '-in',"\""+ fasta_file+"\"",
+def update_protein_db():
+    global BLAST_DIR, PROTEIN_DB
+    proteins = get_protein_sequences()
+    fasta_file = PROTEIN_DB + 'Proteins'
+    count = SeqIO.write(proteins, fasta_file + ".fasta", 'fasta')
+    if True:
+        blast_db_command = [BLAST_DIR + 'makeblastdb',
+                    '-in',"\""+ fasta_file + ".fasta" +"\"",
                     "-dbtype","prot", "-title", "Proteins",
                      "-out", "%s"% fasta_file]
         print blast_db_command
-    else:
-        blast_db_command = [config_info['blast_dir'] + 'formatdb',
-                    '-i', "\""+ fasta_file+ "\"",
-                    '-o', 'T',
-                    "-t", "Proteins"]
-        print blast_db_command
+    # else:
+    #     blast_db_command = [BLAST_DIR + 'formatdb',
+    #                 '-i', "\""+ fasta_file+ "\"",
+    #                 '-o', 'T',
+    #                 "-t", "Proteins"]
+    #     print blast_db_command
     subprocess.check_call(blast_db_command)
 
-def check_protein_db(db):
-    cursor = db.cursor()
-    cursor.execute('SELECT count(*) from gene')
+def check_protein_db(count):
+    get_db().execute('SELECT count(*) from gene')
     results = cursor.fetchall()
     new_count = results[0][0]
-    return new_count
+    if new_count != count:
+        update_protein_db()
 
-def get_phage_seq_from_db(db, phage):
-    try:
-        cursor = db.cursor()
-        cursor.execute("SELECT `Sequence`\n\
-        from `phage`\n\
-        where `Name` like %s", (phage))
-        results = cursor.fetchall()
-        return results[0][0]
-    except:
-        pass
 
 def get_gene_number(geneID):
     """
@@ -142,51 +133,69 @@ def get_gene_number(geneID):
     # print 'regular exp:', gene_num
     return int(gene_num)
 
-def desktop_file():
+def add_desktop_file():
+    desktop = ConfigParser.RawConfigParser()
+    desktop.optionxform = str
+    desktop.readfp(open(DESKTOP_FILE))
+    desktop_info = dict(desktop.items("Desktop Entry"))
+    desktop_info["Exec"] ="python " + os.path.join(os.path.dirname(os.path.abspath(__file__)), "Starterator")
+    desktop_info["Icon"] = os.path.join(os.environ["HOME"], ".starterator/", "starterator.svg")
+    desktop.set("Desktop Entry", "Exec", "./" + os.path.join(os.path.dirname(os.path.abspath(__file__)), "starterator.sh") )
+    desktop.set("Desktop Entry", "Icon", os.path.join(os.environ["HOME"], ".starterator/", "starterator.svg"))
+    with open(DESKTOP_FILE, 'wb') as df:
+        desktop.write(df)
+    subprocess.check_call(["xdg-desktop-icon",  "install", "--novendor", DESKTOP_FILE])
+    print "icon file added"
+    subprocess.check_call(["xdg-desktop-menu", "install", "--novendor", DESKTOP_FILE])
+    print "desktop menu icon installed"
     # if not os.path.exists(os.path.join(os.environ["HOME"], ".starterator", "starterator.svg")):
     shutil.copyfile(ICON_FILE,
-            os.path.join(os.environ["HOME"], ".local/share/applications/", "starterator.svg"))
-    # if not os.path.exists(os.path.join(os.environ["HOME"], ".local/share/applications/", "starterator.desktop")):
-    shutil.copyfile(DESKTOP_FILE,
-            os.path.join(os.environ["HOME"], ".local/share/applications/", "starterator.desktop"))
+            os.path.join(os.environ["HOME"], ".starterator/", "starterator.svg"))
 
 def create_folders():
     if not os.path.exists(os.path.join(os.environ["HOME"], ".starterator")):
         os.mkdir(os.path.join(os.environ["HOME"], ".starterator"))
+    if not os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), "Proteins")):
+        os.mkdir(os.path.join(os.environ["Home"], "Applications", "Starterator", "Proteins"))
     if not os.path.exists(os.path.join(os.environ["HOME"], ".starterator", "starterator.config")):
-        shutil.copyfile("extras/starterator.config", )
+        shutil.copyfile("extras/starterator.config", os.path.join(os.environ["HOME"], ".starterator", "starterator.config"))
     if not os.path.exists(os.path.join(os.environ["HOME"], ".starterator", "Intermediate Files")):
         os.mkdir(os.path.join(os.environ["HOME"], ".starterator", "Intermediate Files"))
     if not os.path.exists(os.path.join(os.environ["HOME"], ".starterator", "Report Files")): 
         os.mkdir(os.path.join(os.environ["HOME"], ".starterator", "Report Files"))
-    if not os.path.exists(os.path.join(os.environ["HOME"], ".starterator", "Proteins")):
-        os.mkdir(os.path.join(os.environ["HOME"], ".starterator", "Proteins"))
 
-def config_file():
+def move_config_file():
     shutil.copyfile(CONFIGURATION_FILE,
         os.path.join(os.environ['HOME'], '.starterator', 'starterator.config'))
     config = get_config()
     config["intermediate_file_dir"] = os.path.abspath(os.path.join(os.environ["HOME"], ".starterator", "Intermediate Files"))
     config["final_file_dir"] = os.path.abspath(os.path.join(os.environ["HOME"], ".starterator", "Report Files"))
-    config["protein_db"] = os.path.abspath(os.path.join(os.environ["HOME"], ".starterator", "Proteins"))
     write_to_config_file(config)
 
 
 def set_up():
     create_folders()
-    config_file()
-    desktop_file()
+    move_config_file()
+    add_desktop_file()
+
 
 def write_to_config_file(config_info):
+    global INTERMEDIATE_DIR, FINAL_DIR, PROTEIN_DB, BLAST_DIR, CLUSTAL_DIR
     config = ConfigParser.RawConfigParser()
+    INTERMEDIATE_DIR = config_info["intermediate_file_dir"]
+    FINAL_DIR = config_info["final_file_dir"]
+    # PROTEIN_DB = config_info["protein_db"]
+    CLUSTAL_DIR = config_info["clustalw_dir"]
+    BLAST_DIR = config_info["blast_dir"]
     config.add_section('Starterator')
     for name in config_info:
         config.set('Starterator', name, config_info[name])
     print 'write'
-    with open(config_file, 'wb') as configfile:
+    with open(config_file, 'w') as configfile:
         config.write(configfile)
 
 def get_config():
+    global INTERMEDIATE_DIR, FINAL_DIR, PROTEIN_DB, BLAST_DIR, CLUSTAL_DIR
     if not os.path.exists(os.path.join(os.environ["HOME"], ".starterator")):
         set_up()
     config_file = os.path.abspath(os.path.join(os.environ["HOME"], ".starterator/starterator.config"))
@@ -194,6 +203,11 @@ def get_config():
     config.read(config_file)
     print "?", CONFIGURATION_FILE, config
     config_info = dict(config.items('Starterator'))
+    INTERMEDIATE_DIR = config_info["intermediate_file_dir"]
+    FINAL_DIR = config_info["final_file_dir"]
+    # PROTEIN_DB = config_info["protein_db"]
+    CLUSTAL_DIR = config_info["clustalw_dir"]
+    BLAST_DIR = config_info["blast_dir"]
     return config_info
     # config_info['intermediate_file_dir'] = os.path.abspath(self.config_info['intermediate_file_dir'])+ '/'
     # config_info['final_file_dir'] = os.path.abspath(self.config_info['final_file_dir']) + '/'

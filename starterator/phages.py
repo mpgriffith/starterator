@@ -9,18 +9,18 @@ from reportlab.lib.enums import TA_CENTER
 from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
 import PyPDF2
 from reportlab.lib import colors
+from phage import new_phage
 
-
-class Phage(object):
-    def __init__(self, name, is_phamerated, config, db, fasta_file=None, profile_file=None, gui=None, event=None):
+class PhageReport(object):
+    def __init__(self, name, is_phamerated, fasta_file=None, profile_file=None, gui=None, event=None):
         self.name = name
+        self.phage = new_phage(name=name)
         self.genes = {}
         self.is_phamerated = is_phamerated
-        self.intermediate_dir = config['intermediate_file_dir']
-        self.final_dir = config['final_file_dir']
+        self.intermediate_dir = utils.INTERMEDIATE_DIR
+        self.final_dir = utils.FINAL_DIR
         self.fasta = fasta_file
         self.profile = profile_file
-        self.db = db
         self.unphamerated_genes = {}
         self.config = config
         self.gui = gui
@@ -31,20 +31,22 @@ class Phage(object):
     def make_report(self):
         if self.is_phamerated:
             print 'before phams found'
-            phage_phams, seq_length = find_phams_of_a_phage(self.db, self.name)
+            phams = self.phage.get_phams()
+            seq_length = self.phage.length()
             print 'after phams found'
-            for gene_name, pham_no in phage_phams:
+            for gene_name, pham_no in phams:
                 if self.gui:
                     if self.event.is_set():
                         print 'stopped in make_report'
                         sys.exit(0)
                 gene_number = utils.get_gene_number(gene_name)
                 # gene_id = self.name +'_' + str(gene_number)
+
                 gene = genes.Gene(gene_number, self.name, self.is_phamerated, self.config, self.db, is_all=True)
                 self.genes[gene_number] = (gene, pham_no)
             return self.phage_report(seq_length)
         else:
-            seq_length = self.load_unphamerated_genes()
+            
             if self.gui:
                 print 'in unphamerated pham'
                 if self.event.is_set():
@@ -107,7 +109,7 @@ class Phage(object):
         for gene_name, pham_no in phage_phams:
             gene_number = utils.get_gene_number(gene_name)
             gene_id = self.name +'_' + str(gene_number)
-            gene = gene.Gene(gene_number, self.name, self.is_phamerated, self.config, self.db, is_all=True)
+            gene = GeneReport(gene_number, self.name, self.is_phamerated, is_all=True)
             self.genes[gene_number] = (gene, pham_no)
         return self.phage_report(seq_length)
 
@@ -175,6 +177,8 @@ class Phage(object):
             return seq_length
         except:
             raise #Exception("Could not read the DNAMaster Profile")
+
+
 
     def make_pham_genome(self, pham_genes, seq_length):
         """

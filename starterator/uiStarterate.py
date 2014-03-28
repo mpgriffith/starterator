@@ -4,6 +4,7 @@ import threading
 import time
 from uiDialogs import StarteratorFinishedDialog
 import starterate
+from utils import StarteratorError
 
 class StarteratorEnterInformation(Gtk.Dialog):
     def show_starterate_button(self):
@@ -44,7 +45,7 @@ class StarteratorEnterInformation(Gtk.Dialog):
 
     def show_profile_entry(self):
         hbox = Gtk.Box(spacing= 6)
-        label = Gtk.Label("Phage Fasta File")
+        label = Gtk.Label("Phage Profile File")
         unphamed_profile_button = Gtk.Button('Select')
         profile_entry = Gtk.Entry()
         profile_entry.connect('changed', self.on_entry_changed, 'profile')
@@ -177,10 +178,15 @@ class StarteratorEnterInformation(Gtk.Dialog):
 
     def starterate(self, button):
         db = self.db_connect()
-        self.info['phage'] = self.find_phage_in_db(db, str(self.info['phage']))
+        phage_name = self.find_phage_in_db(db, str(self.info['phage']))
         print 'new phage name', self.info['phage']
         print 'phamerated', self.info['phamerated']
         print 'all', self.info['all']
+        if phage_name == None and self.info["phamerated"] and not self.info["pham"]:
+            self.phameratored_exception(self.info["phage"])
+            return
+        elif self.info["phamerated"]:
+            self.info["phage"] = phage_name
         self.progress_label = Gtk.Label('Starterator is starting')
         self.progress_bar = Gtk.ProgressBar()
         self.box.pack_start(self.progress_label, False, False, 0)
@@ -188,14 +194,21 @@ class StarteratorEnterInformation(Gtk.Dialog):
         self.show_all()
         self.starterate_thread = StarteratorThread(self, db, self.config_info, self.info )
         self.starterate_thread.start()
-     
+    
 
     def stop_starterator(self, button):
         print self.starterate_thread
         if self.starterate_thread != None:
             self.starterate_thread.cancel()
         self.destroy()
-
+    
+    def phameratored_exception(self, name):
+        dialog = Gtk.MessageDialog(self, 0, Gtk.MessageType.ERROR,
+            Gtk.ButtonsType.OK, "Phage %s could not be found in Phamerator Database!" % name)
+        dialog.format_secondary_text("Please check your spelling or choose an Unphameratored option.")
+        dialog.run()
+        dialog.destroy()
+    
     def on_file_clicked(self, button, data):
         name = data[0]
         entry = data[1]
@@ -217,6 +230,7 @@ class StarteratorEnterInformation(Gtk.Dialog):
     def on_entry_changed(self, entry, name):
         self.info[name] = entry.get_text()
         print name, self.info[name]
+    
     def on_orientation_toggled(self, button, orientation):
             if button.get_active():
                 self.info['orientation'] = orientation
@@ -252,10 +266,13 @@ class StarteratorEnterInformation(Gtk.Dialog):
         print results
         if len(results) < 1:
             self.info['phamerated'] == False
-            return phage
+            return None
         else:
             self.info['phamerated'] == True
             return results[0][0]
+    
+    def check_pham_number():
+        pass
 
     def update_starterator(self, label_text, progress_amount):
         self.progress_label.set_text(label_text)
@@ -266,7 +283,6 @@ class StarteratorThread(threading.Thread):
         threading.Thread.__init__(self)
         # self.stop = False
         self.parent = parent
-        self.db = db
         self.config_info = config
         self.info = info
         self.final_file = None
@@ -278,14 +294,22 @@ class StarteratorThread(threading.Thread):
 
     def starterate(self):
         try:
-            self.final_file = starterate.starterate(self.db, self.config_info, self.info, 
+            self.final_file = starterate.starterate(self.info, 
                 gui=self, event=self.stop_thread)
             # print self.final_file
+        except StarteratorError as e:
+            self.stop = True
+            Gdk.threads_enter()
+            dialog = Gtk.MessageDialog(self.parent, 0, Gtk.MessageType.ERROR,
+                Gtk.ButtonsType.CANCEL, "Starterator has encountered an error")
+            dialog.format_secondary_text(e)
+            dialog.run()
+            dialog.destroy()
+            Gdk.threads_leave()
         except:
             if self.stop_thread.is_set():
                 return
             print 'exception in starterator'
-            self.db.close()
             self.stop = True
             Gdk.threads_enter()
             dialog = Gtk.MessageDialog(self.parent, 0, Gtk.MessageType.ERROR,
@@ -299,7 +323,6 @@ class StarteratorThread(threading.Thread):
             raise
  
         else:
-            self.db.close()
             if self.stop_thread.is_set():
                 # clean up files?
                 # show dialog

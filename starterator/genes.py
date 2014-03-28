@@ -11,29 +11,22 @@ from Bio.Blast.Applications import NcbiblastpCommandline as Blastp
 from Bio.Blast.Applications import BlastallCommandline
 import MySQLdb
 
-class Gene(object):
-    def __init__(self, number, phage, is_phamerated, config, db, fasta_file=None, is_all=False):
+class GeneReport(object):
+    def __init__(self, number, phage, is_phamerated=True, fasta_file=None, is_all=False):
         self.phage = phage
         self.number = number
         self.name = phage + '_' + str(number)
-        self.db = db
         self.is_phamerated = is_phamerated
         if self.is_phamerated:
             self.pham_no = get_pham_no(self.db, self.phage, self.number)
         self.is_whole_phage = is_all
         self.fasta = fasta_file
-        self.output_dir = config['intermediate_file_dir']
-        self.final_dir = config['final_file_dir']
-        self.protein_db = config['protein_db'] + 'Proteins'
-        self.blast_dir = config['blast_dir'] 
-        self.legacy_blast = config['legacy_blast']
-
 
     def blast_gene(self):
         """
             Function that performs BLAST querying the unphamed gene's protein sequence on
             the Mycobacteriophage Proteins database
-            Uses an E-value of .0001 as in paper for Phamily formation
+            Uses an E-value of 10E-30 as in paper for Phamily formation
             Finds the first (best hit) result of the query and returns the line
         """
         # Create a fasta file containing the gene
@@ -111,13 +104,15 @@ class Gene(object):
         self.protein = SeqRecord(self.gene_record.annotations['translation'], id=self.name)
 
     def load_unphamerated_gene(self, gene_record, protein):
+        """
+        """
         self.gene_record = gene_record
         self.protein = protein
 
     def make_report(self, genes=None):
         one_or_all = 'All' if self.is_whole_phage else 'One'
         file_name = None if self.is_phamerated else "%sPham%s" % (self.phage, self.pham_no)
-        pham = Pham(self.pham_no, self.db, self.phage, root_file_name=file_name)
+        pham = Pham(self.pham_no, self.phage, root_file_name=file_name)
         if  not self.is_phamerated and not self.is_whole_phage:
             pham.add_gene(self.gene_record)
         if genes != None:
@@ -125,7 +120,8 @@ class Gene(object):
                 pham.add_gene(gene.gene_record)
         pham.align(self.output_dir, one_or_all, already_aligned=False)
         pham.put_similar_genes_together()
-        pickle_file = self.output_dir + '%sPham%s.p' %((self.phage + one_or_all), self.pham_no)
+        start_stats = pham.most_common_start()
+        pickle_file = utils.INTERMEDIATE_DIR + '%sPham%s.p' %((self.phage + one_or_all), self.pham_no)
         cPickle.dump(pham, open(pickle_file, 'wb'))
 
         subprocess.check_call(['python', utils.MAKING_FILES,
@@ -133,16 +129,16 @@ class Gene(object):
             '-n', self.pham_no,
             '-a', one_or_all,
             '-f', "\"%s\"" % pickle_file,
-            '-o', "\"%s\"" % self.output_dir,
-            '-d', "\"%s\"" % self.final_dir,
+            '-o', "\"%s\"" % utils.INTERMEDIATE_DIR,
+            '-d', "\"%s\"" % utils.FINAL_DIR,
             '-m', 'text'])
         subprocess.check_call(['python', utils.MAKING_FILES,
             '-p', self.phage, 
             '-n', self.pham_no,
             '-a', one_or_all,
             '-f', "\"%s\"" % pickle_file,
-            '-o', "\"%s\"" % self.output_dir,
-            '-d', "\"%s\"" % self.final_dir,
+            '-o', "\"%s\"" % utils.INTERMEDIATE_DIR,
+            '-d', "\"%s\"" % utils.FINAL_DIR,
             '-m', 'graph'])
         return pham
 
@@ -153,10 +149,10 @@ class Gene(object):
             {Phage}Pham{Number}Report.pdf
         """
         merger = PyPDF2.PdfFileMerger()
-        graph = open("%sPham%sGraph.pdf" % (self.output_dir + self.phage + 'One', self.pham_no), "rb")
-        text = open('%s%sPham%sText.pdf' % (self.output_dir, self.phage +'One', self.pham_no), 'rb')
+        graph = open("%sPham%sGraph.pdf" % (utils.INTERMEDIATE_DIR + self.phage + 'One', self.pham_no), "rb")
+        text = open('%s%sPham%sText.pdf' % (utils.INTERMEDIATE_DIR, self.phage +'One', self.pham_no), 'rb')
         merger.append(fileobj=graph)
         merger.append(fileobj=text)
-        file_path = "%s%sPham%sReport.pdf" % (self.final_dir, self.phage, self.pham_no)
+        file_path = "%s%sPham%sReport.pdf" % (utils.FINAL_DIR, self.phage, self.pham_no)
         merger.write(open(file_path, 'wb'))
         return file_path, "%sPham%sReport.pdf" % (self.phage, self.pham_no)

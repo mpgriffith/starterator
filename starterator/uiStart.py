@@ -9,6 +9,7 @@ import utils
 from uiStarterate import StarteratorEnterInformation
 from uiDialogs import DatabaseInfoDialog, PreferencesDialog
 import time
+import phamgene
 
 """
 GUI Application for Starterator
@@ -107,7 +108,7 @@ class StarteratorWindow(Gtk.Window):
         vbox.add(hbox)
         self.vbox.pack_start(vbox, True, True, 0)
         self.vbox.show()
-        self.config_info = {}
+        # self.config_info = {}
         # print utils.get_configuration
         self.check_blast_type()
         db = self.attempt_db_connect()
@@ -193,7 +194,7 @@ class StarteratorWindow(Gtk.Window):
                 self.config_info['legacy_blast'] = True
             except:
                 dialog = Gtk.MessageDialog(self, 0, Gtk.MessageType.ERROR,
-                    Gtk.ButtonsType.CANCEL, "BLAST is not installed or Path not correct")
+                    Gtk.ButtonsType.CANCEL, "BLAST is not installed")
                 dialog.format_secondary_text(
                 "Please install BLAST.")
                 dialog.run()
@@ -269,9 +270,9 @@ class StarteratorWindow(Gtk.Window):
         if self.config_info["final_file_dir"] == "?":
             self.show_exception("Final Reports")
             return False
-        if self.config_info["protein_db"] == "?":
-            self.show_exception("Protein Database")
-            return False
+        # if self.config_info["protein_db"] == "?":
+        #     self.show_exception("Protein Database")
+        #     return False
         return True
     
     def show_exception(self, name):
@@ -291,13 +292,7 @@ class StarteratorWindow(Gtk.Window):
         self.config_info['final_file_dir'] = os.path.abspath(self.config_info['final_file_dir']) + '/'
         self.config_info['protein_db'] = os.path.abspath(self.config_info['protein_db']) + '/'
         db = self.db_connect()
-        new_count = utils.check_protein_db(db)
-        print new_count, self.config_info['count']
-        if new_count != int(self.config_info['count']):
-            utils.update_protein_db(db, self.config_info)
-            self.clean_up_files()
-            self.config_info['count'] = new_count
-            utils.write_to_config_file(self.config_info)
+        phamgene.check_protein_db(self.config_info["count"])
         tree_iter = combo.get_active_iter()
         if tree_iter != None:
             model = combo.get_model()

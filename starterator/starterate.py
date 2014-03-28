@@ -1,11 +1,7 @@
 #!/usr/bin/env python
 
-from phams import Pham
-import phams
 import argparse
 import utils
-from phages import Phage
-from genes import Gene
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import letter, A4
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer
@@ -29,6 +25,8 @@ import math
 import cPickle
 from gi.repository import Gtk, Gdk, GObject
 import getpass
+import report
+import phamgene
 
 def gui():
     GObject.threads_init()
@@ -89,108 +87,38 @@ def get_arguments():
     parser.add_argument('-f', '--fasta', help='Path to Fasta File')
     return parser.parse_args()
 
-class UnphameratedGene(object):
-    """
-        Class to hold the protein sequence record and
-        gene sequence record of genes that have not been
-        entered into Phamerator
-    """
-    def __init__(self, gene, protein):
-        self.gene = gene
-        self.protein = protein
-
-def get_final_file(path_to_file):
-    try:
-        if os.path.exists(path_to_file) and os.path.isfile(path_to_file):
-            return path_to_file, '%sReport.pdf' % phage
-        # for root, files, dirs in os.walk(output_dir):
-        #     for name in files:
-        #         if phage + one_or_all in name:
-        #             print 'should wait'
-        #             return open_file(path_to_file)
-        if args.unphamed == False:
-            return phamerated_phage()
-        else:
-            return unphamerated_phage()
-    except Exception:
-        raise
 
 
-def make_report(pham, output_dir, final_dir):
-    one_or_all = 'One'
-    phage = None
-    pham.put_similar_genes_together()
-    pickle_file = output_dir + '%sPham%s.p' % (one_or_all, pham.pham_no)
-    cPickle.dump(pham, open(pickle_file, 'wb'))
-    print "made pickle file", pickle_file
-
-    subprocess.check_call(['python', utils.MAKING_FILES, 
-        '-n', pham.pham_no,
-        '-a', one_or_all,
-        '-f', "\"%s\"" % pickle_file,
-        '-o', "\"%s\"" % output_dir,
-        '-d', "\"%s\"" % final_dir,
-        '-m', 'text'])
-    subprocess.check_call(['python', utils.MAKING_FILES, 
-        '-n', pham.pham_no,
-        '-a', one_or_all,
-        '-f', "\"%s\"" % pickle_file,
-        '-o', "\"%s\"" % output_dir,
-        '-d', "\"%s\"" % final_dir,
-        '-m', 'graph'])
-    return merge_report(pham.pham_no, output_dir, final_dir)
-
-
-def merge_report(pham_no, output_dir, final_dir):
-    """
-        Merges the graphical and text output of one pham into one PDF file
-        {Phage}Pham{Number}Report.pdf
-    """
-    merger = PyPDF2.PdfFileMerger()
-    graph = open("%sPham%sGraph.pdf" % (output_dir + 'One', pham_no), "rb")
-    text = open('%s%sPham%sText.pdf' % (output_dir, 'One', pham_no), 'rb')
-    merger.append(fileobj=graph)
-    merger.append(fileobj=text)
-    file_path = "%sPham%sReport.pdf" % (final_dir, pham_no)
-    merger.write(open(file_path, 'wb'))
-    return file_path, "Pham%sReport.pdf" % (pham_no)
-
-def starterate(db, config, info, gui=None, event=None):
+def starterate(info, gui=None, event=None):
     global one_or_all, phage, protein_db, output_dir, final_dir
     one_or_all = 'All' if info['all'] else 'One'
     phage = info['phage']
     # print phage
-    protein_db = config['protein_db'] + 'ProteinsDB'
-    output_dir = config['intermediate_file_dir']
-    final_dir = config['final_file_dir']
-    print config["legacy_blast"]
+    protein_db = utils.PROTEIN_DB + 'ProteinsDB'
+    output_dir = utils.INTERMEDIATE_DIR
+    final_dir = utils.FINAL_DIR
     if info['all'] and info['phamerated']:
-        phage = Phage(phage, info['phamerated'], config, db, gui=gui, event=event)
-        final_file, short_final = phage.make_report()
+        phage = report.PhageReport(phage, gui=gui, event=event)
+        final_file, short_final = phage.final_report()
     elif info['all'] and not info['phamerated']:
         # phams.update_protein_db(db, config)
-        phage = Phage(phage, info['phamerated'], config, db, fasta_file=info['fasta'], profile_file=info['profile'], gui=gui, event=event)
-        final_file, short_final = phage.make_report()
+        phage = report.UnPhamPhageReport(phage, fasta_file=info['fasta'], profile_file=info['profile'], gui=gui, event=event)
+        final_file, short_final = phage.final_report()
     elif not info['all'] and info['phamerated'] and not info['pham']:
-        gene = Gene(info['gene_no'], info['phage'], info['phamerated'], config, db)
-        print gene
+        gene = report.GeneReport( info['phage'], number=info['gene_no'])
+        gene.get_pham()
         gene.make_report()
-        final_file, s = gene.one_pham_report()
+        final_file, s = gene.merge_report()
     elif not info['all'] and not info['phamerated'] and not info['pham']:
         # phams.update_protein_db(db, config)
-        gene = Gene(info['gene_no'], info['phage'], info['phamerated'], config, db, fasta_file=info['fasta'])
-        gene.make_unphamerated_gene(int(info['start']), int(info['stop']), info['orientation'])
-        gene.blast_gene()
-        print gene
+        gene = report.GeneReport(info['phage'], info["gene_no"], fasta_file=info['fasta'])
+        gene.make_unpham_gene(int(info['start']), int(info['stop']), info['orientation'])
         gene.make_report()
-        final_file, s = gene.one_pham_report()
+        final_file, s = gene.merge_report()
     else:
         # Pham without phage'
-        pham = Pham(info['pham'], db, None)
-        # self, pham_no, db, phage_name)
-        pham.align(config['intermediate_file_dir'], "One")
-        final_file, s = make_report(pham, config['intermediate_file_dir'], config['final_file_dir'])
-
+        pham = report.PhamReport(info['pham'])
+        final_file,s = pham.final_report()
     return final_file
 
 
@@ -198,15 +126,15 @@ def starterate(db, config, info, gui=None, event=None):
 def main():
     args = get_arguments()
     config = utils.get_config()
-    db = utils.db_connect(config)
-    # config_info['intermediate_file_dir'] = "/home/marissa/"
-    # config_info['final_file_dir'] = raw_input('Enter final_file_dir')
+    print config["count"]
+    phamgene.check_protein_db(config["count"])
     # --Phamerated and only one gene
     if args.gene_number != -1 and args.phage != None and args.unphamed == False:
-        gene = Gene(args.gene_number, args.phage, True, config, db)
+        gene = report.GeneReport(args.phage, args.gene_number, True)
         print gene
+        gene.get_pham()
         gene.make_report()
-        final_file, s = gene.one_pham_report()
+        final_file, s = gene.merge_report()
 
     # --Unphameratored Phage with only one gene
     elif args.given_start > -1 and args.phage != None and args.unphamed == True:
@@ -215,31 +143,31 @@ def main():
         given_start = args.given_start
         given_stop = args.given_stop
         given_orientation = args.given_orientation
-        gene_name = args.phage + '_' + args.gene_number
-        phams.update_protein_db(db, config)
-        gene = Gene(args.gene_number, args.phage, args.unphamed, config, db, fasta_file=args.fasta)
-        gene.make_unphamerated_gene(given_start, given_stop, given_orientation)
-        gene.blast_gene()
+        gene_name = args.phage + '_' + str(args.gene_number)
+        gene = report.GeneReport(args.phage, args.gene_number, fasta_file=args.fasta)
+        gene.make_unpham_gene(given_start, given_stop, given_orientation)
         print gene
         gene.make_report()
-        final_file, s = gene.one_pham_report()
+        final_file, s = gene.merge_report()
 
     # --Phameratored or Unphameratored Phages with all genes
     elif args.pham_no == -1 and args.phage != None and args.unphamed == False:
-        phage = Phage(args.phage, True, config, db, gui=None)
-        final_file, short_final = phage.make_report()
+        phage = report.PhageReport(args.phage, gui=None)
+        final_file, short_final = phage.final_report()
 
     elif args.pham_no == -1 and args.phage != None and args.unphamed == True:
-        phage = Phage(args.phage, False, config, db, fasta_file=args.fasta, profile_file=args.profile, gui=None)
-        final_file, short_final = phage.make_report()
-
+        phage = report.UnPhamPhageReport(args.phage, fasta_file=args.fasta, profile_file=args.profile, gui=None)
+        final_file, short_final = phage.final_report()
+    elif args.phage == None:
+        pham = report.PhamReport(args.pham_no)
+        final_file, short_final = pham.final_report()
     # clean_up_files()
     # email_final_report(args.email, short_final)
 
 
 if __name__ == '__main__':
     try:
-        print utils.DIR_PATH
+        # print utils.DIR_PATH ???
         main() 
     except Exception, e:
         # send_error_email(e)
