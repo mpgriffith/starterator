@@ -137,7 +137,7 @@ def add_desktop_file():
     desktop.optionxform = str
     desktop.readfp(open(DESKTOP_FILE))
     desktop_info = dict(desktop.items("Desktop Entry"))
-    desktop_info["Exec"] = + os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "Starterator")
+    desktop_info["Exec"] = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "Starterator")
     desktop_info["Icon"] = os.path.join(os.environ["HOME"], ".starterator/", "starterator.svg")
     desktop.set("Desktop Entry", "Exec",  os.path.join(os.dirname(os.path.dirname(os.path.abspath(__file__))), "starterator.sh") )
     desktop.set("Desktop Entry", "Icon", os.path.join(os.environ["HOME"], ".starterator/", "starterator.svg"))
