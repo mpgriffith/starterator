@@ -157,7 +157,7 @@ def create_folders():
     if not os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), "Proteins")):
         os.mkdir(os.path.join(os.environ["HOME"], "Applications", "Starterator", "Proteins"))
     if not os.path.exists(os.path.join(os.environ["HOME"], ".starterator", "starterator.config")):
-        shutil.copyfile(CONFIGURATION_FILE, ".starterator", "starterator.config"))
+        shutil.copyfile(CONFIGURATION_FILE, ".starterator", "starterator.config")
     if not os.path.exists(os.path.join(os.environ["HOME"], ".starterator", "Intermediate Files")):
         os.mkdir(os.path.join(os.environ["HOME"], ".starterator", "Intermediate Files"))
     if not os.path.exists(os.path.join(os.environ["HOME"], ".starterator", "Report Files")): 
