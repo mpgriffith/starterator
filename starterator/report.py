@@ -11,6 +11,7 @@ import math
 import os
 from utils import StarteratorError
 import csv
+import annotate
 
 class Report(object):
     def __init__(self, name=None):
@@ -149,46 +150,43 @@ class UnPhamPhageReport(PhageReport):
             sequence = self.get_sequence()
             genes = []
             # try:
-            with open(self.profile, "rbU") as profile:
-                print self.profile, "has been opened!"
-                csv_reader = csv.reader(profile)
-                line = csv_reader.next()
-                print line
-                csv_reader.next()
-                for row in csv_reader:
-                    print line
-                    feature_type = row[7].strip()
-                    print feature_type
-                    if feature_type == "ORF":
-                        number = row[1].replace('"', "")
-                        orientation = row[2]
-                        start = int(row[4])
-                        stop = int(row[5])
-                        print number, start, stop, orientation, self.name
-                        gene = phamgene.UnPhamGene(number, start, stop, orientation, self.name, 
-                            sequence)
-                        genes.append(gene)
+            if self.profile == None:
+                gene_predictions = annotate.auto_annotate(self.fasta)
+                for gene in gene_predictions.genes:
+                    gene = phamgene.UnPhamGene(gene.id, gene.start, gene.stop, gene.orientation, self.name, sequence)
+                    genes.append(gene)
+                    pham_no = gene.blast()
+                    if pham_no not in self._phams:
+                        self._phams[pham_no] = []
+                    self._phams[pham_no].append(gene)
+            else:
+                try:
+                    with open(self.profile, "rbU") as profile:
+                        print self.profile, "has been opened!"
+                        csv_reader = csv.reader(profile)
+                        line = csv_reader.next()
+                        print line
+                        csv_reader.next()
+                        for row in csv_reader:
+                            print line
+                            feature_type = row[7].strip()
+                            print feature_type
+                            if feature_type == "ORF":
+                                number = row[1].replace('"', "")
+                                orientation = row[2]
+                                start = int(row[4])
+                                stop = int(row[5])
+                                print number, start, stop, orientation, self.name
+                                gene = phamgene.UnPhamGene(number, start, stop, orientation, self.name, 
+                                    sequence)
+                                genes.append(gene)
 
-                        pham_no = gene.blast()
-                        if pham_no not in self._phams:
-                            self._phams[pham_no] = []
-                        self._phams[pham_no].append(gene)
-            # except:
-            #     raise
-                # raise StarteratorError("The profile file (%s) could not be read correctly! Please make sure it is correct." % self.profile)
-        
-        # record_genes = [gene.sequence for gene in genes]
-        # e_value = math.pow(10, -30)
-        # SeqIO.write(record_genes, "%s%s.fasta" % (utils.INTERMEDIATE_DIR, self.name), "fasta")
-        # blast_args = ["%sblastp"  % utils.BLAST_DIR, 
-        #         "-out", '%s%s.xml' % (utils.INTERMEDIATE_DIR, self.name),
-        #         "-outfmt", "5",
-        #         "-query", '%s%s.fasta' % (utils.INTERMEDIATE_DIR, self.name),
-        #         "-db", "\"%sProteins\"" % (utils.PROTEIN_DB),
-        #         "-evalue", str(e_value)
-        #         ]
-        # print " ".join(blast_args)
-        # subprocess.check_call(blast_args)
+                                pham_no = gene.blast()
+                                if pham_no not in self._phams:
+                                    self._phams[pham_no] = []
+                                self._phams[pham_no].append(gene)
+                except:
+                    raise StarteratorError("The profile file (%s) could not be read correctly! Please make sure it is correct." % self.profile)
         return self._phams
 
     def make_reports(self):

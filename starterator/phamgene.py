@@ -354,17 +354,17 @@ class UnPhamGene(PhamGene):
         # but I wanted to keep the Genes out of file making...
 
         try:
-            result_handle =  open("%s%s.xml" % (utils.INTERMEDIATE_DIR, self.gene_id))
+            result_handle =  open("%s/%s.xml" % (utils.INTERMEDIATE_DIR, self.gene_id))
             result_handle.close()
         except:
             protein = SeqRecord(self.sequence.seq.translate(), id=self.gene_id)
             print protein, self.sequence
             e_value = math.pow(10, -30)
-            SeqIO.write(protein, '%s%s.fasta' % (utils.INTERMEDIATE_DIR, self.gene_id), 'fasta')
+            SeqIO.write(protein, '%s/%s.fasta' % (utils.INTERMEDIATE_DIR, self.gene_id), 'fasta')
             blast_command = Blastp(
                             query='%s%s.fasta' % (utils.INTERMEDIATE_DIR, self.gene_id),
                             db="\"%s/\"" % (os.path.abspath(utils.PROTEIN_DB)), evalue=e_value, outfmt=5,
-                            out="%s%s.xml" % (os.path.join(utils.INTERMEDIATE_DIR, self.gene_id)))
+                            out="%s.xml" % (os.path.join(utils.INTERMEDIATE_DIR, self.gene_id)))
             # print self.gene_id, "\"%sProteins\"" % (utils.PROTEIN_DB)
             blast_args = ["%sblastp"  % utils.BLAST_DIR, 
                 "-out", '%s/%s.xml' % (utils.INTERMEDIATE_DIR, self.gene_id),
@@ -383,13 +383,13 @@ class UnPhamGene(PhamGene):
         return self.parse_blast()
 
     def parse_blast(self):
-        result_handle = open("%s%s.xml" % (utils.INTERMEDIATE_DIR, self.gene_id))
+        result_handle = open("%s/%s.xml" % (utils.INTERMEDIATE_DIR, self.gene_id))
 
         try:
             blast_record = NCBIXML.read(result_handle)
         except:
             result_handle.close()
-            result_handle = open('%s%s.xml' % (self.output_dir, self.name))
+            result_handle = open('%s/%s.xml' % (self.output_dir, self.name))
             blast_records = NCBIXML.parse(result_handle)
             blast_record = blast_records.next()
 

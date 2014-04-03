@@ -45,7 +45,7 @@ class StarteratorEnterInformation(Gtk.Dialog):
 
     def show_profile_entry(self):
         hbox = Gtk.Box(spacing= 6)
-        label = Gtk.Label("Phage Profile File")
+        label = Gtk.Label("Phage Profile File (optional)")
         unphamed_profile_button = Gtk.Button('Select')
         profile_entry = Gtk.Entry()
         profile_entry.connect('changed', self.on_entry_changed, 'profile')
@@ -107,8 +107,8 @@ class StarteratorEnterInformation(Gtk.Dialog):
         self.info['phamerated'] = False
         self.info['all'] = True
         self.show_phage_entry()
-        self.show_profile_entry()
         self.show_fasta_entry()
+        self.show_profile_entry()
         self.show_starterate_button()
         self.show_all()
 
