@@ -19,6 +19,7 @@
 import MySQLdb
 import time
 from utils import get_config
+from utils import StarteratorError
 
 
 class DB(object):
@@ -112,7 +113,7 @@ class DB(object):
         except MySQLdb.OperationalError:
             print "Error connecting to MySQL on %s", self.host
             self.close()
-            raise
+            raise StarteratorError("Error connecting to database! Please enter correct login credentials in Preferences menu.")
 
 class Row(dict):
     """A dict that allows for object-like property access syntax."""

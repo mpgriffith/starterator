@@ -1,3 +1,14 @@
+# Copyright (c) 2013, 2014 All Right Reserved, Hatfull Lab, University of Pittsburgh
+#
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY
+# KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A
+# PARTICULAR PURPOSE.  USE AT YOUR OWN RISK.
+#
+# Marissa Pacey
+# April 4, 2014
+# Starterate Window
+
 import MySQLdb
 from gi.repository import Gtk, Gdk
 import threading
@@ -5,6 +16,8 @@ import time
 from uiDialogs import StarteratorFinishedDialog
 import starterate
 from utils import StarteratorError
+import database
+import phamgene
 
 class StarteratorEnterInformation(Gtk.Dialog):
     def show_starterate_button(self):
@@ -170,14 +183,19 @@ class StarteratorEnterInformation(Gtk.Dialog):
 
 
     def db_connect(self):
-        db = MySQLdb.connect(self.config_info['database_server'], 
-                self.config_info['database_user'],
-                self.config_info['database_password'],
-                self.config_info['database_name'])
-        return db
+        try:
+            db = database.DB()
+            return db
+        except:
+            dialog = Gtk.MessageDialog(self, 0, Gtk.MessageType.ERROR,
+                Gtk.ButtonsType.CANCEL, "Starterator has encountered an error")
+            dialog.format_secondary_text("Error connecting to the database. Please check login credentials in Preferences menu")
+            dialog.run()
+            dialog.destroy()
 
     def starterate(self, button):
         db = self.db_connect()
+        phamgene.check_protein_db(self.config_info['count'])
         phage_name = self.find_phage_in_db(db, str(self.info['phage']))
         print 'new phage name', self.info['phage']
         print 'phamerated', self.info['phamerated']
@@ -256,13 +274,11 @@ class StarteratorEnterInformation(Gtk.Dialog):
             phage_list.append(row)
 
     def find_phage_in_db(self, db, phage):
-        cursor = db.cursor()
-        cursor.execute("SELECT Name\n\
-        from phage\n\
-        where Name like %s\n\
-        or Name like %s \n\
-        or Name = %s", (phage+'-%', phage+'_%', phage))
-        results = cursor.fetchall()
+        results = db.query("SELECT Name\n\
+            from phage\n\
+            where Name like %s\n\
+            or Name like %s \n\
+            or Name = %s", (phage+'-%', phage+'_%', phage))
         print results
         if len(results) < 1:
             self.info['phamerated'] == False

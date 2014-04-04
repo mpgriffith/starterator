@@ -1,4 +1,14 @@
 #!/usr/bin/env python
+# Copyright (c) 2013, 2014 All Right Reserved, Hatfull Lab, University of Pittsburgh
+#
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY
+# KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A
+# PARTICULAR PURPOSE.  USE AT YOUR OWN RISK.
+#
+# Marissa Pacey
+# April 4, 2014
+# Starterate function 
 
 import argparse
 import utils

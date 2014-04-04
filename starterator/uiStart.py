@@ -1,4 +1,16 @@
 #!/usr/bin/env python
+
+# Copyright (c) 2013, 2014 All Right Reserved, Hatfull Lab, University of Pittsburgh
+#
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY
+# KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A
+# PARTICULAR PURPOSE.  USE AT YOUR OWN RISK.
+#
+# Marissa Pacey
+# April 4, 2014
+# Starting window of Starterator
+
 import MySQLdb
 from gi.repository import Gtk
 import ConfigParser
@@ -111,7 +123,7 @@ class StarteratorWindow(Gtk.Window):
         # self.config_info = {}
         # print utils.get_configuration
         self.check_blast_type()
-        db = self.attempt_db_connect()
+        # db = self.attempt_db_connect()
 
 
     def create_ui_manager(self):
@@ -291,8 +303,6 @@ class StarteratorWindow(Gtk.Window):
         self.config_info['intermediate_file_dir'] = os.path.abspath(self.config_info['intermediate_file_dir'])+ '/'
         self.config_info['final_file_dir'] = os.path.abspath(self.config_info['final_file_dir']) + '/'
         self.config_info['protein_db'] = os.path.abspath(self.config_info['protein_db']) + '/'
-        db = self.db_connect()
-        phamgene.check_protein_db(self.config_info["count"])
         tree_iter = combo.get_active_iter()
         if tree_iter != None:
             model = combo.get_model()
