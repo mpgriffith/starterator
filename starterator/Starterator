@@ -8,8 +8,6 @@ def gui():
 	GObject.threads_init()
 	Gdk.threads_init()
 	win = StarteratorWindow()
-	win.connect('delete-event', Gtk.main_quit)
-	win.show_all()
 	Gdk.threads_enter()
 	Gtk.main()
 	Gdk.threads_leave()

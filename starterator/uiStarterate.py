@@ -106,15 +106,12 @@ class StarteratorEnterInformation(Gtk.Dialog):
         hbox.pack_start(pham_entry, False, False, 0)
         self.box.pack_start(hbox, False, False, 0)
 
-
-
     def phamerated_all(self):
         self.info['phamerated'] = True
         self.info['all'] = True
         self.show_phage_entry()
         self.show_starterate_button()
         self.show_all()
-
 
     def unphamerated_all(self):
         self.info['phamerated'] = False
@@ -133,7 +130,6 @@ class StarteratorEnterInformation(Gtk.Dialog):
         self.show_starterate_button() 
         self.show_all()    
   
-
     def unphamerated_one(self):
         self.info['phamerated'] = False
         self.info['all'] = False
@@ -152,7 +148,7 @@ class StarteratorEnterInformation(Gtk.Dialog):
         self.show_all()
 
     def __init__(self, parent, choice, config):
-        Gtk.Dialog.__init__(self, "Starterator", parent, 0)
+        Gtk.Dialog.__init__(self, "Starterator", parent.window, 0)
         self.set_border_width(10)
         self.config_info = config
         self.info = {'phage': None,
@@ -213,9 +209,7 @@ class StarteratorEnterInformation(Gtk.Dialog):
         self.starterate_thread = StarteratorThread(self, db, self.config_info, self.info )
         self.starterate_thread.start()
     
-
     def stop_starterator(self, button):
-        print self.starterate_thread
         if self.starterate_thread != None:
             self.starterate_thread.cancel()
         self.destroy()
@@ -236,18 +230,14 @@ class StarteratorEnterInformation(Gtk.Dialog):
              Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
         response = dialog.run()
         if response == Gtk.ResponseType.OK:
-            print "Open clicked"
             print "File selected: " + dialog.get_filename()
             self.info[name] = dialog.get_filename()
             entry.set_text(self.info[name])
             print name, self.info[name]
-        elif response == Gtk.ResponseType.CANCEL:
-            print "Cancel clicked"
         dialog.destroy()
 
     def on_entry_changed(self, entry, name):
         self.info[name] = entry.get_text()
-        print name, self.info[name]
     
     def on_orientation_toggled(self, button, orientation):
             if button.get_active():
@@ -266,7 +256,6 @@ class StarteratorEnterInformation(Gtk.Dialog):
 
 
     def get_phage_list(self, db, phage_list):
-        print db
         cursor = db.cursor()
         cursor.execute('SELECT Name from phage')
         results = cursor.fetchall()
@@ -279,7 +268,6 @@ class StarteratorEnterInformation(Gtk.Dialog):
             where Name like %s\n\
             or Name like %s \n\
             or Name = %s", (phage+'-%', phage+'_%', phage))
-        print results
         if len(results) < 1:
             self.info['phamerated'] == False
             return None
@@ -329,7 +317,7 @@ class StarteratorThread(threading.Thread):
             self.stop = True
             Gdk.threads_enter()
             dialog = Gtk.MessageDialog(self.parent, 0, Gtk.MessageType.ERROR,
-                Gtk.ButtonsType.CANCEL, "Starterator has encountered an error")
+                Gtk.ButtonsType.CANCEL, "Startstaerator has encountered an error")
             dialog.format_secondary_text(
             "Please try again.")
             dialog.run()

@@ -32,17 +32,18 @@ def get_protein_sequences():
     proteins = []
     results = get_db().query('SELECT GeneID, translation from gene')
     for row in results:
-        protein = SeqRecord(Seq(row[1], IUPAC.protein), id=row[0]+"+", name=row[0], description=row[0])
+        gene_id = row[0].replace("-", "_")
+        protein = SeqRecord(Seq(row[1].replace('-', ''), IUPAC.protein), id=gene_id+"_", name=row[0], description=gene_id)
         proteins.append(protein)
     return proteins
 
 def update_protein_db():
     proteins = get_protein_sequences()
-    fasta_file = utils.PROTEIN_DB + 'Proteins'
-    count = SeqIO.write(proteins, fasta_file +".fasta", 'fasta')
+    fasta_file = os.path.join(utils.PROTEIN_DB, "Proteins.fasta")
+    count = SeqIO.write(proteins, fasta_file, 'fasta')
     if True:
         blast_db_command = [utils.BLAST_DIR + 'makeblastdb',
-                    '-in',"\""+ fasta_file+ ".fasta\"",
+                    '-in',"\""+ fasta_file+ "\"",
                     "-dbtype","prot", "-title", "Proteins",
                      "-out", "%s"% fasta_file]
         print blast_db_command
@@ -200,6 +201,7 @@ class PhamGene(Gene):
         gene_no = self.db_id.split("_")[-1]
         gene_no = gene_no.split(" ")[0]
         self.gene_id = self.phage_name + "_" + gene_no
+        self.gene_id = self.gene_id.replace('-', "_")
         phage_sequence = phage.get_sequence()
         if self.orientation == 'R':
             temp_start = self.stop
@@ -207,7 +209,8 @@ class PhamGene(Gene):
             self.start = temp_start
         sequence, self.ahead_of_start = find_upstream_stop_site(
                                 self.start, self.stop, self.orientation, phage_sequence)
-        gene = SeqRecord(sequence, id=self.gene_id , name=self.gene_id)
+        gene = SeqRecord(sequence, id=self.gene_id , name=self.gene_id,
+                 description="|%i-%i| %s" %(self.start, self.stop, self.orientation))
         return gene
 
 

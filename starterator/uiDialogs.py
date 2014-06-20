@@ -21,7 +21,7 @@ import utils
 
 class StarteratorExceptionDialog(Gtk.Dialog):
     def __init__(self, parent):
-        Gtk.Dialog.__init__(self, 'Exception', parent, 0, (Gtk.DialogFlags.DESTROY_WITH_PARENT), (Gtk.STOCK_OK, Gtk.ResponseType.OK))
+        Gtk.Dialog.__init__(self, 'Exception', parent.window, 0, (Gtk.DialogFlags.DESTROY_WITH_PARENT), (Gtk.STOCK_OK, Gtk.ResponseType.OK))
         self.set_border_width(10)
         box = self.get_content_area()
         label = Gtk.Label('Starterator has reached an error.')
@@ -31,7 +31,7 @@ class StarteratorExceptionDialog(Gtk.Dialog):
 class StarteratorFinishedDialog(Gtk.Dialog):
 
     def __init__(self, parent, report_file):
-        Gtk.Dialog.__init__(self, 'Starterator is Done', parent, 0)
+        Gtk.Dialog.__init__(self, 'Starterator is Done', parent.window, 0)
         self.set_border_width(10)
         box = self.get_content_area()
         label = Gtk.Label('Starterator has completed.')
@@ -50,7 +50,7 @@ class StarteratorFinishedDialog(Gtk.Dialog):
 
 class DatabaseInfoDialog(Gtk.Dialog):
     def __init__(self, parent, db_server, db_name, db_user):
-        Gtk.Dialog.__init__(self, 'Database Information', parent, 0, (Gtk.STOCK_OK, Gtk.ResponseType.OK))
+        Gtk.Dialog.__init__(self, 'Database Information', parent.window, 0, (Gtk.STOCK_OK, Gtk.ResponseType.OK))
         self.set_border_width(10)
         self.info = {'db_server' : db_server,
                      'db_name' : db_name,
@@ -102,7 +102,7 @@ class DatabaseInfoDialog(Gtk.Dialog):
 
 class StarteratorProgressDialog(Gtk.Dialog):
     def __init__(self, parent):
-        Gtk.Dialog.__init__(self, 'Starterator Progress', parent, 0)
+        Gtk.Dialog.__init__(self, 'Starterator Progress', parent.window, 0)
         vbox = self.get_content_area()
         self.progress_label = Gtk.Label('Starterator is starting')
         self.progress_bar = Gtk.ProgressBar()
@@ -137,7 +137,6 @@ class StarteratorThread(threading.Thread):
         except:
             if self.stop_thread.is_set():
                 return
-            print 'exception in starterator'
             self.db.close()
             self.stop = True
             Gdk.threads_enter()
@@ -157,7 +156,6 @@ class StarteratorThread(threading.Thread):
                 # clean up files?
                 # show dialog
                 return
-            print 'help after starterator finished'
             Gdk.threads_enter()
             done_dialog = StarteratorFinishedDialog(self.parent, self.final_file)
             response = done_dialog.run()
@@ -178,7 +176,7 @@ class StarteratorThread(threading.Thread):
 
 class PreferencesDialog(Gtk.Dialog):
     def __init__(self, parent, config):
-        Gtk.Dialog.__init__(self, "Preferences", parent, 0,  
+        Gtk.Dialog.__init__(self, "Preferences", parent.window, 0,  
              (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
              Gtk.STOCK_OK, Gtk.ResponseType.APPLY))
         self.set_border_width(10)
@@ -262,15 +260,15 @@ class PreferencesDialog(Gtk.Dialog):
         hbox.pack_start(final_button, False, False, 0 )
         box.pack_start(hbox, False, False, 0)
 
-        hbox = Gtk.Box(spacing= 6)
-        protein_button = Gtk.Button('Choose a Protein Database Folder')
-        protein_entry = Gtk.Entry()
-        protein_entry.set_text(self.config_info["protein_db"])
-        protein_entry.connect('changed', self.on_entry_changed, "protein_db")
-        protein_button.connect('clicked', self.on_folder_clicked, ['protein_db', protein_entry, "Protein Databse"])
-        hbox.pack_start(protein_entry, False, False, 0 )
-        hbox.pack_start(protein_button, False, False, 0 )
-        box.pack_start(hbox, False, False, 0)
+        # hbox = Gtk.Box(spacing= 6)
+        # protein_button = Gtk.Button('Choose a Protein Database Folder')
+        # protein_entry = Gtk.Entry()
+        # protein_entry.set_text(self.config_info["protein_db"])
+        # protein_entry.connect('changed', self.on_entry_changed, "protein_db")
+        # protein_button.connect('clicked', self.on_folder_clicked, ['protein_db', protein_entry, "Protein Databse"])
+        # hbox.pack_start(protein_entry, False, False, 0 )
+        # hbox.pack_start(protein_button, False, False, 0 )
+        # box.pack_start(hbox, False, False, 0)
         return box
 
     def on_folder_clicked(self, button, data):
@@ -283,14 +281,12 @@ class PreferencesDialog(Gtk.Dialog):
              Gtk.STOCK_OPEN, Gtk.ResponseType.OK))
         response = dialog.run()
         if response == Gtk.ResponseType.OK:
-            print "Open clicked"
             print "File selected: " + dialog.get_filename()
             self.config_info[name] = dialog.get_filename()
             entry.set_text(self.config_info[name])
             print name, self.config_info[name]
             utils.write_to_config_file(self.config_info)
-        elif response == Gtk.ResponseType.CANCEL:
-            print "Cancel clicked"
+
         dialog.destroy()
 
     def other_tab(self):

@@ -1,5 +1,16 @@
 #!/usr/bin/env python
 
+# Copyright (c) 2013, 2014 All Right Reserved, Hatfull Lab, University of Pittsburgh
+#
+# THIS CODE AND INFORMATION ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY
+# KIND, EITHER EXPRESSED OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE
+# IMPLIED WARRANTIES OF MERCHANTABILITY AND/OR FITNESS FOR A
+# PARTICULAR PURPOSE.  USE AT YOUR OWN RISK.
+#
+# Marissa Pacey
+# April 4, 2014
+# Functions that create the PDF outputsst
+
 import cPickle
 import argparse
 from Bio.Graphics import GenomeDiagram
@@ -262,14 +273,12 @@ def make_pham_text(args, pham, pham_no, output_dir, only_pham=False):
     tracks_info = []
     for index in range(len(groups)):
         text = "Track %s : " % (index+1)
-        for gene in groups[index]:
-            text += gene.gene_id + ', '
+        text += ", ".join(gene.gene_id for gene in groups[index])
         tracks_info.append("<font size=12> "+ u'\u2022'+" %s</font>" % text)
     for line in tracks_info:
         story.append(Paragraph(line, styles["Normal"]))
     story.append(Spacer(1, 12))
     if only_pham:
-        print "hello making specifics"
         start_stats = pham.stats["most_common"]
         output = output_start_sites(start_stats)
         for line in output:

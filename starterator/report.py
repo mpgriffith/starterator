@@ -235,8 +235,6 @@ class GeneReport(Report):
         self.all = whole_phage
         self.fasta = fasta_file
 
-    
-
     def get_pham(self, pham_no=None, genes=None):
         if pham_no and genes:
             self.pham = phams.Pham(pham_no, genes)

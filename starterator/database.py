@@ -18,19 +18,15 @@
 
 import MySQLdb
 import time
-from utils import get_config
-from utils import StarteratorError
-
+from utils import get_config, StarteratorError
 
 class DB(object):
 
     def __init__(self):
         self._last_use_time = time.time()
         self.max_idle_time = float(1800)
-        
         self._db = None
         args = {}
-        print "hi from db init!"
         config = get_config()
         args["user"] = config["database_user"]
         args["passwd"] = config["database_password"]

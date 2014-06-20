@@ -131,8 +131,6 @@ def starterate(info, gui=None, event=None):
         final_file,s = pham.final_report()
     return final_file
 
-
-
 def main():
     args = get_arguments()
     config = utils.get_config()

@@ -21,7 +21,7 @@
 
   </p>
   <p>
-    To generate a report on a gene of a phage not in the Phamerator Database, choose the One Unphameratored Gene option and click OK. A new window will appear. In this window, type the name of the phage. Then you will need click the select button next to Fasta file and select the fasta file by navigating to the appropiate file. In addition, you will need to type in the gene number of the gene you are interested in (only used for display purposes), the start and stop coordinates and select the correct orientation. and then click the button Starterate. A new window displaying the progess will apear. When Starterator has completed, you wil see a another window with a link to the report. To understand how to read the report, <link type="topic" xref="output">read this</link>.
+    To generate a report on a gene of a phage not in the Phamerator Database, choose the One Unphameratored Gene option and click OK. A new window will appear. In this window, type the name of the phage. Then you will need click the select button next to Fasta file and select the fasta file by navigating to the appropiate file. In addition, you will need to type in the gene number of the gene you are interested in (only used for display purposes), the start and stop coordinates and select the correct orientation. and then click the button Starterate. A new window displaying the progess will apear. When Starterator has completed, you wil see a another window with a link to the report. To understand how to read the report, <link type="topic" xref="basicoutput">read this</link>.
   </p>
 </section>
 </page>

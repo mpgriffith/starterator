@@ -106,6 +106,12 @@ class Pham(object):
         '-infile=%s' % (fasta_file),
         '-quicktree'])
 
+    def make_fasta(self, file_name=None):
+        if file_name == None:
+            file_name = os.path.join(utils.INTERMEDIATE_DIR, "%sPham%s" % (self.file, self.pham_no))
+        genes = [gene.sequence for gene in self.genes.values()]
+        count = SeqIO.write(genes, "%s.fasta" % file_name, "fasta")
+
     def align(self):
         """
             Makes a fasta file of the genes in the Pham

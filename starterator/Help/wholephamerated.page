@@ -21,6 +21,6 @@
     and click okay. A new window will appear. In this window, you should type the name of the phage you want to run 
     Phamerator on. Once clicked, Starterator will begin and you will see the progress below. Be advised that 
     Starterator can take a while to complete, so do not close this window. When Starterator is finished, a new window 
-    will appear with a link to the report. To understand how to read the report, <link type="topic" xref="output">read this</link>.</p>
+    will appear with a link to the report. To understand how to read the report, <link type="topic" xref="basicoutput">read this</link>.</p>
 </section>
 </page>

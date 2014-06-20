@@ -17,7 +17,7 @@
   <title>One Phameratored Gene</title>
   <p><media type="image" mime="image/png" src="figures/choose_pham_gene.png">Unphameratored Gene</media></p>
   <p>
-    To generate a report on a gene of a phage in the Phamerator Database, choose the One Phameratored Gene option and click OK. A new window will appear. In this window, type the name of the phage and the gene number of the gene you are interested in and then click the button Starterate. When Starterator has completed, you will see a another window with a link to the report. To understand how to read the report, <link type="topic" xref="output">read this</link>.
+    To generate a report on a gene of a phage in the Phamerator Database, choose the One Phameratored Gene option and click OK. A new window will appear. In this window, type the name of the phage and the gene number of the gene you are interested in and then click the button Starterate. When Starterator has completed, you will see a another window with a link to the report. To understand how to read the report, <link type="topic" xref="basicoutput">read this</link>.
   </p>
 </section>
 </page>

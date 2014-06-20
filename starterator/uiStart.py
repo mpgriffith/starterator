@@ -22,6 +22,7 @@ from uiStarterate import StarteratorEnterInformation
 from uiDialogs import DatabaseInfoDialog, PreferencesDialog
 import time
 import phamgene
+import phams
 
 """
 GUI Application for Starterator
@@ -56,120 +57,40 @@ MENU_UI = """
 """
 
 
-class StarteratorWindow(Gtk.Window):
-    def show_choice_button(self):
-        self.vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL, spacing=6)
-        self.add(self.vbox)
-        hbox = Gtk.Box(spacing= 6)
-        self.choice_list = Gtk.ListStore(str)
-        for item in self.choices:
-            self.choice_list.append([item])
-        self.choice_label = Gtk.Label('Choose what you want to starterate: ')
-
-        self.choice_box = Gtk.ComboBox().new_with_model(self.choice_list)
-        self.choice_button = Gtk.Button("OK")
-        renderer_text = Gtk.CellRendererText()
-        self.choice_box.pack_start(renderer_text, True)
-        self.choice_box.add_attribute(renderer_text, "text", 0)
-        self.choice_button.connect('clicked', self.on_choice_changed)
-        self.vbox.pack_start(self.choice_label, False, False, 0)
-        hbox.pack_start(self.choice_box, False, False, 0)
-        hbox.pack_start(self.choice_button, False, False, 0)
-        self.vbox.pack_start(hbox, False, False, 0)
-
-  
+class StarteratorWindow:
     def __init__(self):
-        Gtk.Window.__init__(self, title="Starterator")
 
         self.choices = ['Whole Phamerated Phage', 'Whole Unphamerated Phage', 
                         'One Phamerated Gene', 'One Unphamerated Gene', 'Pham']
   
         # self.set_border_width(10)
         self.config_info = utils.get_config()
-        self.set_icon_from_file(utils.icon_file)
-        self.vbox = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        self.add(self.vbox)
-        action_group = Gtk.ActionGroup("my_actions")
 
-        self.add_file_menu_actions(action_group)
-        self.add_edit_menu_actions(action_group)
-        self.add_help_menu_actions(action_group)
-
-        uimanager = self.create_ui_manager()
-        uimanager.insert_action_group(action_group)
-
-        menubar = uimanager.get_widget("/MenuBar")
-        box = Gtk.Box(orientation=Gtk.Orientation.VERTICAL)
-        box.pack_start(menubar, False, False, 0)
-        self.vbox.add(box)
-        vbox = Gtk.Box(orientation= Gtk.Orientation.VERTICAL, spacing=6)
-        hbox = Gtk.Box(spacing= 6)
-        self.choice_list = Gtk.ListStore(str)
-        for item in self.choices:
-            self.choice_list.append([item])
-        self.choice_label = Gtk.Label('Choose what you want to starterate: ')
-        self.choice_box = Gtk.ComboBox().new_with_model(self.choice_list)
-        renderer_text = Gtk.CellRendererText()
-        self.choice_box.pack_start(renderer_text, True)
-        self.choice_box.add_attribute(renderer_text, "text", 0)
-        self.choice_button = Gtk.Button("OK")
-        self.choice_button.connect('clicked', self.on_choice_changed, self.choice_box)
-        self.vbox.pack_start(self.choice_label, False, False, 0)
-        hbox.pack_start(self.choice_box, True, True, 0)
-        hbox.pack_start(self.choice_button, True, True, 0)
-        vbox.add(hbox)
-        self.vbox.pack_start(vbox, True, True, 0)
-        self.vbox.show()
+        builder = Gtk.Builder()
+        builder.add_from_file(utils.glade_file)
+        self.window = builder.get_object("StartWindow")
+        self.window.set_icon_from_file(utils.icon_file)
+        choice_box = builder.get_object('choicebox')
+        choice_list = Gtk.ListStore(str)
+        for choice in self.choices: choice_list.append([choice])
+        choice_box.set_model(choice_list)
+        renderer = Gtk.CellRendererText()
+        choice_box.pack_start(renderer, True)
+        choice_box.add_attribute(renderer, "text", 0)
+        choice_box.set_active(0)
+        builder.connect_signals(self)
+        self.window.show_all()
+        # self.vbox.pack_start(vbox, True, True, 0)
         # self.config_info = {}
         # print utils.get_configuration
         self.check_blast_type()
         # db = self.attempt_db_connect()
-
-
-    def create_ui_manager(self):
-        uimanager = Gtk.UIManager()
-
-        # Throws exception if something went wrong
-        uimanager.add_ui_from_string(MENU_UI)
-
-        # Add the accelerator group to the toplevel window
-        accelgroup = uimanager.get_accel_group()
-        self.add_accel_group(accelgroup)
-        return uimanager
-
-    def add_file_menu_actions(self, action_group):
-        action_filemenu = Gtk.Action("File", "File", None, None)
-        action_group.add_action(action_filemenu)
-
-        action_fileview = Gtk.Action("ViewReports", "View Completed Reports", None, None)
-        action_fileview.connect("activate", self.on_view_clicked)
-        action_group.add_action(action_fileview)
-
-        action_filequit = Gtk.Action("FileQuit", None, None, Gtk.STOCK_QUIT)
-        action_filequit.connect("activate", Gtk.main_quit)
-        action_group.add_action(action_filequit)
-
-    def add_help_menu_actions(self, action_group):
-        action_menu = Gtk.Action("Help", "Help", None, None)
-        action_group.add_action(action_menu)
-
-        action_contents = Gtk.Action("Contents", "Contents", None, None)
-        action_contents.connect("activate", self.on_contents_clicked)
-        action_group.add_action(action_contents)
-
-        action_contents = Gtk.Action("About", "About", None, None)
-        action_contents.connect("activate", self.on_about_clicked)
-        action_group.add_action(action_contents)
-
-    def add_edit_menu_actions(self, action_group):
-        action_menu = Gtk.Action("Edit", "Edit", None, None)
-        action_group.add_action(action_menu)
-        action_contents = Gtk.Action("Preferences", "Preferences", None, None)
-        action_contents.connect("activate", self.on_pref_clicked)
-        action_group.add_action(action_contents)
     
+    def on_quit(self, *args, **kwargs):
+        Gtk.main_quit()
+
     def on_view_clicked(self, button):
-        print os.path.abspath(self.config_info["final_file_dir"])
+        print os.path.abspath(fself.config_info["final_file_dir"])
         os.system("xdg-open \""+ os.path.abspath(self.config_info["final_file_dir"])+"\"")
 
     def on_contents_clicked(self, button):
@@ -189,6 +110,20 @@ class StarteratorWindow(Gtk.Window):
         response = dialog.run()
         if response == Gtk.ResponseType.APPLY:
             utils.write_to_config_file(self.config_info)
+        dialog.destroy()
+
+    def on_fasta_clicked(self, pham_entry):
+        pham_no = pham_entry.get_text()
+        dialog = Gtk.FileChooserDialog("Save fasta file for Pham %s" % pham_no, self.window,
+            Gtk.FileChooserAction.SAVE,
+            (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
+             Gtk.STOCK_SAVE, Gtk.ResponseType.OK))
+        dialog.set_current_name("Pham%s" %pham_no)
+        response = dialog.run()
+        if response == Gtk.ResponseType.OK:
+            file_name = dialog.get_filename()
+            pham = phams.Pham(pham_no)
+            pham.make_fasta(file_name)
         dialog.destroy()
 
     def check_blast_type(self):
@@ -295,7 +230,7 @@ class StarteratorWindow(Gtk.Window):
         dialog.destroy()
 
 
-    def on_choice_changed(self, button, combo):
+    def on_choice_changed(self, combo):
         # if self.info_entry_box:
         #     del self.info_entry_box
         if not self.check_files():

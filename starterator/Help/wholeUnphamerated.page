@@ -35,7 +35,7 @@
           Once these are selected, click the Starterate button, and Starterator will begin. You will see the progress in this window. Be advised that Starterator can take a while to complete, so do not close this window.
           </li>
           <li>
-            When Starterator is finished, a new window will appear with a link to the report. To understand how to read the report, <link type="topic" xref="output">read this</link>.
+            When Starterator is finished, a new window will appear with a link to the report. To understand how to read the report, <link type="topic" xref="basicoutput">read this</link>.
           </li>
         </ul>
         </p>

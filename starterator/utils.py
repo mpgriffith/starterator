@@ -7,7 +7,7 @@
 #
 # Marissa Pacey
 # April 4, 2014
-# Utililty functions for Starterator
+# Utility functions for Starterator
 
 import MySQLdb
 import ConfigParser
@@ -18,7 +18,6 @@ from Bio.SeqRecord import SeqRecord
 from Bio.Seq import Seq
 from Bio import SeqIO
 from Bio.Alphabet import IUPAC
-from pkg_resources import resource_string, resource_filename
 import shutil
 
 
@@ -36,7 +35,7 @@ config_file = os.path.abspath(os.path.join(os.environ["HOME"], ".starterator/sta
 icon_file = os.path.abspath(os.path.join(os.environ["HOME"], ".starterator/starterator.svg"))
 desktop_file = os.path.abspath(os.path.join(os.environ["HOME"], ".local/share/applications/", "startertor.desktop"))
 help_files = os.path.join(os.path.dirname(os.path.abspath(__file__)), "Help")
-
+glade_file = os.path.join(os.path.dirname(os.path.abspath(__file__))) + "/starterator.glade"
 
 class StarteratorError(Exception):
     def __init__(self, value):
