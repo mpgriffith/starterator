@@ -114,6 +114,14 @@ class StarteratorWindow:
 
     def on_fasta_clicked(self, pham_entry):
         pham_no = pham_entry.get_text()
+        try:
+            pham = phams.Pham(pham_no)
+        except:
+            dialog = Gtk.MessageDialog(self.window, 0, Gtk.MessageType.ERROR,
+                Gtk.ButtonsType.CANCEL, "Pham %s is not a valid pham number" % pham_no)
+            dialog.run()
+            dialog.destroy()
+            return
         dialog = Gtk.FileChooserDialog("Save fasta file for Pham %s" % pham_no, self.window,
             Gtk.FileChooserAction.SAVE,
             (Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL,
@@ -122,7 +130,6 @@ class StarteratorWindow:
         response = dialog.run()
         if response == Gtk.ResponseType.OK:
             file_name = dialog.get_filename()
-            pham = phams.Pham(pham_no)
             pham.make_fasta(file_name)
         dialog.destroy()
 
