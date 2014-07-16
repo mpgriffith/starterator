@@ -39,8 +39,14 @@ def get_protein_sequences():
 
 def update_protein_db():
     proteins = get_protein_sequences()
-    fasta_file = os.path.join(utils.PROTEIN_DB, "Proteins.fasta")
-    count = SeqIO.write(proteins, fasta_file, 'fasta')
+    try:
+        fasta_file = os.path.join(utils.PROTEIN_DB, "Proteins.fasta")
+        count = SeqIO.write(proteins, fasta_file, 'fasta')
+    except:
+        print "creating proteins folder in correct place"
+        utils.create_folders()
+        fasta_file = os.path.join(utils.PROTEIN_DB, "Proteins.fasta")
+        count = SeqIO.write(proteins, fasta_file, 'fasta')
     if True:
         blast_db_command = [utils.BLAST_DIR + 'makeblastdb',
                     '-in',"\""+ fasta_file+ "\"",

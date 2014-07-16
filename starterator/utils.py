@@ -164,8 +164,8 @@ def add_desktop_file():
 def create_folders():
     if not os.path.exists(os.path.join(os.environ["HOME"], ".starterator")):
         os.mkdir(os.path.join(os.environ["HOME"], ".starterator"))
-    if not os.path.exists(os.path.join(os.path.dirname(os.path.abspath(__file__)), "Proteins")):
-        os.mkdir(os.path.join(os.environ["HOME"], "Applications", "Starterator", "Proteins"))
+    if not os.path.exists(PROTEIN_DB):
+        os.mkdir(PROTEIN_DB)
     if not os.path.exists(os.path.join(os.environ["HOME"], ".starterator", "starterator.config")):
         shutil.copyfile(CONFIGURATION_FILE, 
             os.path.join(os.environ["HOME"], ".starterator", "starterator.config"))

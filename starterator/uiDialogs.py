@@ -31,7 +31,7 @@ class StarteratorExceptionDialog(Gtk.Dialog):
 class StarteratorFinishedDialog(Gtk.Dialog):
 
     def __init__(self, parent, report_file):
-        Gtk.Dialog.__init__(self, 'Starterator is Done', parent.window, 0)
+        Gtk.Dialog.__init__(self, 'Starterator is Done', parent, 0)
         self.set_border_width(10)
         box = self.get_content_area()
         label = Gtk.Label('Starterator has completed.')
