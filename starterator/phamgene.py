@@ -390,7 +390,7 @@ class UnPhamGene(PhamGene):
                 "-out", '%s/%s.xml' % (utils.INTERMEDIATE_DIR, self.gene_id),
                 "-outfmt", "5",
                 "-query", '%s/%s.fasta' % (utils.INTERMEDIATE_DIR, self.gene_id),
-                "-db", "\"%sProteins\"" % (utils.PROTEIN_DB),
+                "-db", "\"%s/Proteins.fasta\"" % (utils.PROTEIN_DB),
                 "-evalue", str(e_value)
                 ]
             print " ".join(blast_args)
