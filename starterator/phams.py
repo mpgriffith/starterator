@@ -229,7 +229,11 @@ class Pham(object):
         for gene in self.genes.values():
             if gene.gene_id in start_stats["possible"][most_called_start_index]:
                 if gene.gene_id in genes_start_most_called:
-                    gene.suggested_start["most_called"] =(most_called_start_index, gene.start+1)
+                    if gene.orientation == 'F':
+                        gene.suggested_start["most_called"] =(most_called_start_index, gene.start+1)
+                    else:
+                        gene.suggested_start["most_called"] =(most_called_start_index, gene.start)
+
                     start_stats["most_called"].append(gene.gene_id)
                 else:
                     start_stats["most_not_called"].append(gene.gene_id)
