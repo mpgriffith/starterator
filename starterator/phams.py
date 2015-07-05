@@ -233,7 +233,6 @@ class Pham(object):
                         gene.suggested_start["most_called"] =(most_called_start_index, gene.start+1)
                     else:
                         gene.suggested_start["most_called"] =(most_called_start_index, gene.start)
-
                     start_stats["most_called"].append(gene.gene_id)
                 else:
                     start_stats["most_not_called"].append(gene.gene_id)
