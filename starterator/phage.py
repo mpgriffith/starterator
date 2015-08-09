@@ -102,7 +102,7 @@ class Phage(object):
                     self.phams[row[1]] = []
                 gene = phamgene.PhamGene(row[0], row[3], row[4], row[5], self.phage_id)
                 self.phams[row[1]].append(gene)
-        return self.phams
+        return self.phams  #this links genes in phage to pham number
 
 class UnPhamPhage(Phage):
     def __init__(name, fasta_file, profile_file):

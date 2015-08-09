@@ -101,6 +101,7 @@ def get_arguments():
 
 def starterate(info, gui=None, event=None):
     global one_or_all, phage, protein_db, output_dir, final_dir
+
     one_or_all = 'All' if info['all'] else 'One'
     phage = info['phage']
     # print phage
