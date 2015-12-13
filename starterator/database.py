@@ -17,7 +17,7 @@
 
 
 import MySQLdb
-import time
+import time, types
 from utils import get_config, StarteratorError
 
 class DB(object):
@@ -104,6 +104,7 @@ class DB(object):
         return self._db.cursor()
 
     def _execute(self, cursor, query, params):
+        if not isinstance(params, (types.NoneType, tuple, dict)): params = (params,)
         try:
             return cursor.execute(query, params)
         except MySQLdb.OperationalError:
