@@ -8,7 +8,6 @@ import math
 import PyPDF2
 from Bio.Blast import NCBIXML
 from Bio.Blast.Applications import NcbiblastpCommandline as Blastp
-from Bio.Blast.Applications import BlastallCommandline
 import MySQLdb
 
 class GeneReport(object):
