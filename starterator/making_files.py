@@ -71,6 +71,17 @@ def output_suggested_starts(pham, phage=None, all_genes=False):
             output.append(gene.gene_id + ", " +str(coord_suggestion))
     return output
 
+def make_valid_pham_group(pham):
+    candidate_groups = pham.group_similar_genes()
+    genes = []
+    for candidate_group in candidate_groups:
+        group = []
+        for gene in candidate_group:
+            if len(gene.alignment_candidate_starts) > 0:
+                group.append(gene)
+        if len(group) > 0:
+            genes.append(group)
+    return genes
 
 def output_start_sites(stats):
         """
@@ -184,7 +195,7 @@ def graph_start_sites(args, pham, file_path):
     """
 
     # genes = sorted(pham.genes_in_pham.values())
-    genes = pham.group_similar_genes()
+    genes = make_valid_pham_group(pham)
     # for group in genes:
     #     print group, group.id
     if args.phage == None:
@@ -269,7 +280,7 @@ def make_pham_text(args, pham, pham_no, output_dir, only_pham=False):
     text = '<font size=14> Pham %s Report </font>' % pham_no
     story.append(Paragraph(text, styles['Center']))
     story.append(Spacer(1, 12))
-    groups = pham.group_similar_genes()
+    groups = make_valid_pham_group(pham)
     tracks_info = []
     for index in range(len(groups)):
         text = "Track %s : " % (index+1)

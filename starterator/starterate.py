@@ -27,7 +27,6 @@ from reportlab.lib import colors
 from reportlab.lib.pagesizes import letter, A4
 from Bio.Blast import NCBIXML
 from Bio.Blast.Applications import NcbiblastpCommandline as Blastp
-from Bio.Blast.Applications import BlastallCommandline
 import MySQLdb
 import subprocess
 import os, sys
