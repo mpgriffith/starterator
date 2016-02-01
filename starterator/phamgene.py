@@ -139,6 +139,7 @@ def find_upstream_stop_site(start, stop, orientation, phage_sequence):
 
 class Gene(object):
     def __init__(self, phage, name, start, stop, orientation, db_id=None):
+        print("Gene init called for {}/{}".format(phage, name))
         self.phage = phage
         self.name = name
         self.start = start
@@ -148,6 +149,12 @@ class Gene(object):
    
     def gene_no():
         get_gene_number(self.name)
+
+    def __str__(self):
+        return "[Gene: {} - {}: ({}, {}) {} db: {}]".format(self.phage, self.name, self.start, self.stop, self.orientation, self.db_id)
+
+    def __repr__(self):
+        return self.__str__()
 
 
 pham_genes = {}
@@ -181,19 +188,19 @@ def get_gene_number(gene_name):
 
 class PhamGene(Gene):
     def __init__(self, db_id, start, stop, orientation, phage_id, pham_no=None):
-        self.db_id = db_id
         self.phage_id = phage_id
-        self.start = start
-        self.stop = stop
-        self.orientation = orientation
         self.pham_no = pham_no
         # self.translation
         # self.ahead_of_start
+        super(PhamGene, self).__init__(
+                self.phage_id, "{}:{}".format(self.phage_id, self.pham_no),
+                start, stop, orientation, db_id)
         self.sequence = self.make_gene()
         self.candidate_starts = self.add_candidate_starts()
         self.alignment = None
         self.alignment_start = None
-        self.alignment_candidate_starts = None
+        self.alignment_candidate_starts = []
+        self.alignment_start_site = None
         self.suggested_start = {}
 
 
@@ -255,6 +262,7 @@ class PhamGene(Gene):
             Creates a list of candidate starts of the alignment based on the candidate starts
             of the gene
         """
+        print("Adding starts for {}".format(self.name))
         count = -1 # starts at -1 because the count starts at 0
         aligned_starts = []
         for index, char in enumerate(self.alignment.seq):

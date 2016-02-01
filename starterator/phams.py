@@ -47,6 +47,9 @@ class Pham(object):
             whole = "All" if len(genes) > 1 else "One"
             self.file = "%s%s" % (genes[0].phage_name, whole)
 
+    def __str__(self):
+        return "[Pham: {} genes: {}]".format(self.pham_no, len(self.genes))
+
 
     def get_genes(self):
         """
@@ -191,9 +194,21 @@ class Pham(object):
             (useful when looking at the graphical output), and the coordinate is given.
         """
         # TODO:
-            # add functionality for ignoring DRAFT phages?
-        all_start_sites = [gene.alignment_start_site for gene in self.genes.values()]
-        all_start_sites_set = set([gene.alignment_start_site for gene in self.genes.values()])
+        # add functionality for ignoring DRAFT phages?
+        print('==== Pham Genes ====')
+        candidate_genes = {}
+        for name, gene in self.genes.iteritems():
+            print(gene)
+            if gene.alignment_start_site == None:
+                print("Gene IGNORED, null alignment start site!".format(gene))
+            #elif gene.alignment_candidate_starts == None or len(gene.alignment_candidate_starts):
+            #    print("Gene IGNORED, no candidate starts!".format(gene))
+            else:
+                candidate_genes[name] = gene
+                print("Gene ADDED, {} alignment start for {}".format(gene.alignment_start_site, gene))
+
+        all_start_sites = [gene.alignment_start_site for gene in candidate_genes.values() if gene.alignment_start_site != None]
+        all_start_sites_set = set([gene.alignment_start_site for gene in candidate_genes.values() if gene.alignment_start_site != None])
         start_stats = {}
         # creates two lists each containing a list of gene ids
         # for each candidate start of the pham:
@@ -209,7 +224,7 @@ class Pham(object):
             start_stats["possible"][i+1] = []
             # start_stats["most_called"][i+1] = []
             start_stats["called_starts"][i+1] = []
-            for gene in self.genes.values():
+            for gene in candidate_genes.values():
                 if site in gene.alignment_candidate_starts:
                     start_stats["possible"][i+1].append(gene.gene_id)
                 if site == gene.alignment_start_site:
@@ -226,7 +241,7 @@ class Pham(object):
         start_stats["no_most_called"] = []
         genes_without_most_called = []
         print genes_start_most_called
-        for gene in self.genes.values():
+        for gene in candidate_genes.values():
             if gene.gene_id in start_stats["possible"][most_called_start_index]:
                 if gene.gene_id in genes_start_most_called:
                     if gene.orientation == 'F':   #only +1 for forward genes

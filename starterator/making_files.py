@@ -184,7 +184,15 @@ def graph_start_sites(args, pham, file_path):
     """
 
     # genes = sorted(pham.genes_in_pham.values())
-    genes = pham.group_similar_genes()
+    candidate_groups = pham.group_similar_genes()
+    genes = []
+    for candidate_group in candidate_groups:
+        group = []
+        for gene in candidate_group:
+            if len(gene.alignment_candidate_starts) > 0:
+                group.append(gene)
+        if len(group) > 0:
+            genes.append(group)
     # for group in genes:
     #     print group, group.id
     if args.phage == None:
