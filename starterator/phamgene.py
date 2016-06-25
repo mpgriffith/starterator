@@ -204,6 +204,11 @@ class PhamGene(Gene):
         self.alignment_start = None
         self.alignment_candidate_starts = None
         self.suggested_start = {}
+        self.draftStatus = assessdraft(self)  # TODO add code to set to true if draft
+
+    def assessdraft(self):
+
+        return False
 
 
     def make_gene(self):

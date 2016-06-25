@@ -176,9 +176,12 @@ def make_gene_track(gd_diagram, pham, gene_group, num_on_diagram, total):
     end_gene_feature = SeqFeature(FeatureLocation(len(gene.alignment), 
                         len(gene.alignment)+1), strand=None)
 
-    draftStatus = False #TODO: add code to find draft proteins and set as TRUE
+    #draw blue called start only if non-draft gene in gene group
 
-    if not draftStatus:
+    allDraftStatus = False #TODO: add code to find draft proteins and set as TRUE
+
+
+    if not allDraftStatus:
         gd_feature_set.add_feature(start_site_feature, color="blue", label=True)
     gd_feature_set.add_feature(end_gene_feature, color='purple', label=True)
 
