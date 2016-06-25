@@ -155,7 +155,7 @@ def combine_graphs(args, phage, pham_no, num_pages):
 
 def make_gene_track(gd_diagram, pham, gene_group, num_on_diagram, total):
     """"""
-    colors = ['purple', 'red', 'green', 'orange', 'yellow', 'brown'] 
+    colors = ['purple', 'red', 'green', 'orange', 'tan', 'brown']
     gene = gene_group[0]
     gd_gene_track = gd_diagram.new_track(total - num_on_diagram, name='Track %s'  % (num_on_diagram+1), 
                             label=True, greytrack=1)
@@ -182,8 +182,12 @@ def make_gene_track(gd_diagram, pham, gene_group, num_on_diagram, total):
     for gene in gene_group:
         allDraftStatus = allDraftStatus and gene.draftStatus
 
-    if not allDraftStatus:
-        gd_feature_set.add_feature(start_site_feature, color="blue", label=True)
+    if  allDraftStatus:
+       startcolor="yellow"
+    else:
+        startcolor = "blue"
+    gd_feature_set.add_feature(start_site_feature, color=startcolor, label=True)
+
     gd_feature_set.add_feature(end_gene_feature, color='purple', label=True)
 
 def graph_start_sites(args, pham, file_path):
