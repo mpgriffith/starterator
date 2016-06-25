@@ -178,8 +178,9 @@ def make_gene_track(gd_diagram, pham, gene_group, num_on_diagram, total):
 
     #draw blue called start only if non-draft gene in gene group
 
-    allDraftStatus = False #TODO: add code to find draft proteins and set as TRUE
-
+    allDraftStatus = True #TODO: add code to find draft proteins and set as TRUE
+    for gene in gene_group:
+        allDraftStatus = allDraftStatus and gene.draftStatus
 
     if not allDraftStatus:
         gd_feature_set.add_feature(start_site_feature, color="blue", label=True)
