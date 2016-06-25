@@ -178,7 +178,7 @@ def make_gene_track(gd_diagram, pham, gene_group, num_on_diagram, total):
 
     #draw blue called start only if non-draft gene in gene group
 
-    allDraftStatus = True #TODO: add code to find draft proteins and set as TRUE
+    allDraftStatus = True
     for gene in gene_group:
         allDraftStatus = allDraftStatus and gene.draftStatus
 
