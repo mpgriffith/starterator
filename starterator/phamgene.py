@@ -204,11 +204,7 @@ class PhamGene(Gene):
         self.alignment_start = None
         self.alignment_candidate_starts = None
         self.suggested_start = {}
-        self.draftStatus = assessdraft(self)  # TODO add code to set to true if draft
 
-    def assessdraft(self):
-
-        return False
 
 
     def make_gene(self):
@@ -221,6 +217,13 @@ class PhamGene(Gene):
         gene_no = gene_no.split(" ")[0]
         self.gene_id = self.phage_name + "_" + gene_no
         self.gene_id = self.gene_id.replace('-', "_")
+
+        checkDraft = re.compile('_draft', re.IGNORECASE)
+        if checkDraft.search(self.gene_id) is not None:
+            self.draftStatus = True
+        else:
+            self.draftStatus = False
+
         phage_sequence = phage.get_sequence()
         if self.orientation == 'R':
             temp_start = self.stop
