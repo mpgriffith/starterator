@@ -176,7 +176,7 @@ def make_gene_track(gd_diagram, pham, gene_group, num_on_diagram, total):
     end_gene_feature = SeqFeature(FeatureLocation(len(gene.alignment), 
                         len(gene.alignment)+1), strand=None)
 
-    #draw blue called start only if non-draft gene in gene group
+    # draw blue called start only if non-draft gene in gene group
 
     allDraftStatus = True
     for gene in gene_group:
