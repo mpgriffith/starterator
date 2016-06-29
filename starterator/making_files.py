@@ -182,7 +182,7 @@ def make_gene_track(gd_diagram, pham, gene_group, num_on_diagram, total):
     for gene in gene_group:
         allDraftStatus = allDraftStatus and gene.draftStatus
 
-    if  allDraftStatus:
+    if allDraftStatus:
        startcolor="yellow"
     else:
         startcolor = "blue"
