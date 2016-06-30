@@ -12,6 +12,8 @@
 import subprocess
 import cPickle
 import PyPDF2
+import sys
+
 import phams
 import phamgene
 import phage
@@ -308,7 +310,7 @@ class UnPhamGeneReport(GeneReport):
         self.start = start
         self.stop = stop
         self.orientation = orientation
-        self.fasta = fasta
+        self.fasta_file = fasta_file
 
     def get_sequence(self):
         if not self.sequence:
