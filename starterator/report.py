@@ -236,6 +236,13 @@ class UnPhamPhageReport(PhageReport):
 
 class GeneReport(Report):
     def __init__(self, phage_name, number=None, whole_phage=False, fasta_file=None):
+        """
+
+        :param phage_name: name of phage
+        :param number: gene number
+        :param whole_phage: bool
+        :param fasta_file: name of file
+        """
         Report.__init__(self)
         self.phage_name = phage_name
         self.number = number
@@ -329,8 +336,7 @@ class UnPhamGeneReport(GeneReport):
     def make_gene(self, start, stop, orientation):
         sequence = self.get_sequence()
         try:
-            gene = phamgene.UnPhamGene(number, start, stop, orientation, self.name, 
-                                sequence)
+            gene = phamgene.UnPhamGene(number, start, stop, orientation, self.name, sequence)
         except:
             raise StarteratorError("The gene could not be made! Check to make sure coordinates are correct. Start: %s, Stop: %s, Orientation: %s" % 
                 (start, stop, orientation))
@@ -339,7 +345,7 @@ class UnPhamGeneReport(GeneReport):
 
 
     def get_pham(self, pham_no, gene):
-        self.pham = pham.Pham(pham_no, [gene])
+        self.pham = phams.Pham(pham_no, [gene])
         pham.add(gene)
         return pham_no
 
