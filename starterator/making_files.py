@@ -155,7 +155,7 @@ def combine_graphs(args, phage, pham_no, num_pages):
 
 def make_gene_track(gd_diagram, pham, gene_group, num_on_diagram, total):
     """"""
-    colors = ['purple', 'red', 'blue', 'orange', 'tan', 'brown']
+    colors = ['purple', 'red', 'lightblue', 'orange', 'tan', 'brown']
     gene = gene_group[0]
     gd_gene_track = gd_diagram.new_track(total - num_on_diagram, name='Track %s'  % (num_on_diagram+1), 
                             label=True, greytrack=1)
