@@ -415,6 +415,7 @@ def make_suggested_starts(phage_genes, phage_name, file_path):
         story.append(Paragraph(text, styles['Normal']))
         just_text.append(simple_text)
     doc.build(story)
+    print "writing text file"
     with open(text_file_name, 'w' ) as outfile:
         outfile.write("\n".join(just_text))
 
