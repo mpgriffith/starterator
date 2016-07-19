@@ -191,9 +191,9 @@ class StarteratorEnterInformation(Gtk.Dialog):
         db = self.db_connect()
         phamgene.check_protein_db(self.config_info['count'])
         phage_name = self.find_phage_in_db(db, str(self.info['phage']))
-        print 'new phage name', self.info['phage']
-        print 'phamerated', self.info['phamerated']
-        print 'all', self.info['all']
+        print 'uiStarterate.starterate new phage name', self.info['phage']
+        print 'phamerated is ', self.info['phamerated']
+        print 'self.info.all is ', self.info['all']
         if phage_name == None and self.info["phamerated"] and not self.info["pham"]:
             self.phameratored_exception(self.info["phage"])
             return
