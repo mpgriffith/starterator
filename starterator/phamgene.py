@@ -208,7 +208,9 @@ class PhamGene(Gene):
 
     def make_gene(self):
         """
-           makes the gene 
+           makes the gene which is a SeqRecord from Biopython. In this case the "gene" should
+           include all the sequence upstream of the annotated start all the way to the first
+           in frame stop codon.
         """
         phage = new_phage(phage_id=self.phage_id)
         self.phage_name = phage.get_name()
