@@ -338,6 +338,9 @@ class PhamGene(Gene):
             (amount of sequence before the previous stop site) is the same, if the candidate
             starts of the genes are the same, and if the alignment gaps or not are the same
             (This is essentially, they would look the same on the graph output)
+
+            TODO currenly only "is_equal" if the start coordinate is the identical base coordinate
+            would make sense to compare the annotated start index
         """
         if self.start != other.start:
             return False
@@ -351,6 +354,7 @@ class PhamGene(Gene):
         self.sequence.features.sort()
         other.sequence.features.sort()
         for feature1, feature2 in zip(self.sequence.features, other.sequence.features):
+            print "phamgene.is_equal comparing features"
             if feature1.location.start != feature2.location.start:
                 return False
             if feature1.location.end != feature2.location.end:
