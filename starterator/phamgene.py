@@ -164,8 +164,7 @@ def new_PhamGene(db_id, start, stop, orientation, phage_id, phage_sequence=None)
     if db_id == None:
         return UnPhamGene(db_id, start, stop, orientation, phage_id, phage_sequence)
     if pham_genes.get(db_id, True):
-        pham_genes[db_id] = PhamGene(db_id, start, stop,
-                                 orientation, phage_id)
+        pham_genes[db_id] = PhamGene(db_id, start, stop, orientation, phage_id)
     return pham_genes[db_id]
 
 def get_gene_number(gene_name):
