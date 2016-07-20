@@ -339,10 +339,10 @@ class PhamGene(Gene):
             starts of the genes are the same, and if the alignment gaps or not are the same
             (This is essentially, they would look the same on the graph output)
 
-            TODO currenly only "is_equal" if the start coordinate is the identical base coordinate
+            TODO currently only "is_equal" if the start coordinate is the identical base coordinate
             would make sense to compare the annotated start index
         """
-        if self.start != other.start:
+        if self.alignment_start_site != other.alignment_start_site:
             return False
         if self.ahead_of_start != other.ahead_of_start:
             return False
